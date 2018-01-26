@@ -67,7 +67,6 @@ public class BluetoothManager {
     public static void stopScanning(Activity activity, BroadcastReceiver mReceiver){
         try{
             activity.unregisterReceiver(mReceiver);
-            getDefaultBtAdapter().cancelDiscovery();
         } catch (Exception e){
             // already unregistered
         }

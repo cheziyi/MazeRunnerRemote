@@ -130,8 +130,8 @@ public class CheckC2Fragment extends Fragment implements View.OnClickListener, C
                 else{
                     Log.v("Aungg", "isNotChecked");
                     pairedDevicesAdapter.clear();
-                    discoveredDevicesAdapter.clear();
-                    BluetoothManager.stopScanning(getActivity(), mReceiver);
+                    pairedDevicesAdapter.clear();
+                    BluetoothManager.getDefaultBtAdapter().cancelDiscovery();
                 }
                 break;
         }
@@ -147,18 +147,6 @@ public class CheckC2Fragment extends Fragment implements View.OnClickListener, C
         filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
         getActivity().registerReceiver(mReceiver, filter);
 
-
-        Set<BluetoothDevice> pairedDevices = BluetoothManager.getDefaultBtAdapter().getBondedDevices();
-        Log.v("Aungg", String.valueOf(pairedDevices.size()));
-        if (pairedDevices.size() > 0) {
-            // There are paired devices. Get the name and address of each paired device.
-            for (BluetoothDevice device : pairedDevices) {
-                pairedDevicesAdapter.add(device);
-            }
-        }
-        else{
-            //TODO: GUI to show that there is no paired devices.
-        }
     }
 
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -184,7 +172,7 @@ public class CheckC2Fragment extends Fragment implements View.OnClickListener, C
                         }
                         break;
                     case BluetoothAdapter.ACTION_STATE_CHANGED:
-                        Log.v("Aungg", "state changed");
+                        Log.v("Aungg", "action state changed");
                         final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE,
                                 BluetoothAdapter.ERROR);
                         switch (state) {
@@ -193,6 +181,17 @@ public class CheckC2Fragment extends Fragment implements View.OnClickListener, C
                             case BluetoothAdapter.STATE_TURNING_OFF:
                                 break;
                             case BluetoothAdapter.STATE_ON:
+                                Set<BluetoothDevice> pairedDevices = BluetoothManager.getDefaultBtAdapter().getBondedDevices();
+                                Log.v("Aungg", String.valueOf(pairedDevices.size()));
+                                if (pairedDevices.size() > 0) {
+                                    // There are paired devices. Get the name and address of each paired device.
+                                    for (BluetoothDevice bluetoothDevice : pairedDevices) {
+                                        pairedDevicesAdapter.add(bluetoothDevice);
+                                    }
+                                }
+                                else{
+                                    //TODO: GUI to show that there is no paired devices.
+                                }
                                 break;
                             case BluetoothAdapter.STATE_TURNING_ON:
                                 break;
@@ -221,8 +220,8 @@ public class CheckC2Fragment extends Fragment implements View.OnClickListener, C
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
+    public void onDestroy() {
+        super.onDestroy();
         BluetoothManager.stopScanning(getActivity(), mReceiver);
     }
 }
