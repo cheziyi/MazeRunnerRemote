@@ -1,5 +1,6 @@
 package ntu.cz3004.mazerunnerremote.managers;
 
+import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
@@ -31,46 +32,45 @@ public class BluetoothManager {
     public static void setBtEnabled(boolean setEnabled, Fragment fragment)
     {
         if(setEnabled){
-            if(isBtEnabled()){
-                Toast.makeText(fragment.getActivity(), "Already enabled", Toast.LENGTH_SHORT).show();
-            }
-            else{
-                Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                fragment.startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-            }
+            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            fragment.startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
         }
         else{
-            if(!isBtEnabled()){
-                Toast.makeText(fragment.getActivity(), "Already disabled", Toast.LENGTH_SHORT).show();
+            if(getDefaultBtAdapter().disable()){
+                Toast.makeText(fragment.getActivity(), "bluetooth disabled", Toast.LENGTH_LONG).show();
             }
             else{
-                if(getDefaultBtAdapter().disable()){
-                    Toast.makeText(fragment.getActivity(), "bluetooth disabled", Toast.LENGTH_LONG).show();
-                }
-
+                //TODO: fail to disable BT
             }
         }
     }
 
-    public static void startScanning(Context context, BroadcastReceiver mReceiver) throws Exception {
+    public static void startScanning(Activity activity, BroadcastReceiver mReceiver) throws Exception {
         if(!isBtEnabled()){
             throw new Exception("Bluetooth is not enabled.");
         }
         else{
             if(BluetoothAdapter.getDefaultAdapter().startDiscovery()){
-                Toast.makeText(context, "starting", Toast.LENGTH_SHORT).show();
+                Toast.makeText(activity, "starting", Toast.LENGTH_SHORT).show();
             }
             else{
-                Toast.makeText(context, "failed", Toast.LENGTH_SHORT).show();
+                Toast.makeText(activity, "failed", Toast.LENGTH_SHORT).show();
             }
-            IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-            context.registerReceiver(mReceiver, filter);
+            IntentFilter filter = new IntentFilter();
+            filter.addAction(BluetoothDevice.ACTION_FOUND);
+            filter.addAction(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
+            filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
+            activity.registerReceiver(mReceiver, filter);
         }
     }
 
-    public static void stopScanning(Context context, BroadcastReceiver mReceiver){
-        context.unregisterReceiver(mReceiver);
-        getDefaultBtAdapter().cancelDiscovery();
+    public static void stopScanning(Activity activity, BroadcastReceiver mReceiver){
+        try{
+            activity.unregisterReceiver(mReceiver);
+            getDefaultBtAdapter().cancelDiscovery();
+        } catch (Exception e){
+            // already unregistered
+        }
     }
 
     public static void pairDevice(BluetoothDevice device) {

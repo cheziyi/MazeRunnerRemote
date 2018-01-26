@@ -2,6 +2,7 @@ package ntu.cz3004.mazerunnerremote.adapters;
 
 import android.bluetooth.BluetoothDevice;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,6 +49,7 @@ public class AppBluetoothAdapter extends RecyclerView.Adapter<BluetoothViewHolde
     }
 
     public void add(BluetoothDevice bluetoothDevice) {
+        Log.v("Aungg", "added");
         for(BluetoothDevice device : bluetoothList){
             if(device.getAddress().equals(bluetoothDevice.getAddress())){
                 return;
@@ -55,5 +57,10 @@ public class AppBluetoothAdapter extends RecyclerView.Adapter<BluetoothViewHolde
         }
         bluetoothList.add(bluetoothDevice);
         notifyItemInserted(bluetoothList.size() - 1);
+    }
+
+    public void clear() {
+        bluetoothList = new ArrayList<>();
+        notifyDataSetChanged();
     }
 }
