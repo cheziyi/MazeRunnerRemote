@@ -24,3 +24,4 @@ public class ExampleInstrumentedTest {
         assertEquals("ntu.cz3004.mazerunnerremote", appContext.getPackageName());
     }
 }
+
