@@ -31,11 +31,23 @@ public class BluetoothViewHolder extends RecyclerView.ViewHolder implements View
     public void bind(BluetoothDevice bluetoothDevice, final AppBluetoothAdapter.OnItemClickListener onItemClickListener) {
         this.bluetoothDevice = bluetoothDevice;
         this.onItemClickListener = onItemClickListener;
+        String deviceStatus = "";
+        switch (bluetoothDevice.getBondState()){
+            case BluetoothDevice.BOND_BONDED:
+                deviceStatus = "(paired)";
+                break;
+            case BluetoothDevice.BOND_BONDING:
+                deviceStatus = "(pairing)";
+                break;
+            case BluetoothDevice.BOND_NONE:
+                deviceStatus = "(unpaired)";
+                break;
+        }
         if(TextUtils.isEmpty(bluetoothDevice.getName())){
-            btName.setText(bluetoothDevice.getAddress());
+            btName.setText(bluetoothDevice.getAddress() + " " + deviceStatus);
         }
         else{
-            btName.setText(bluetoothDevice.getName());
+            btName.setText(bluetoothDevice.getName() + " " + deviceStatus);
             layoutContainer.setOnClickListener(this);
         }
     }

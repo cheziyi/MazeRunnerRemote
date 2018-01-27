@@ -45,33 +45,6 @@ public class BluetoothManager {
         }
     }
 
-    public static void startScanning(Activity activity, BroadcastReceiver mReceiver) throws Exception {
-        if(!isBtEnabled()){
-            throw new Exception("Bluetooth is not enabled.");
-        }
-        else{
-            if(BluetoothAdapter.getDefaultAdapter().startDiscovery()){
-                Toast.makeText(activity, "starting", Toast.LENGTH_SHORT).show();
-            }
-            else{
-                Toast.makeText(activity, "failed", Toast.LENGTH_SHORT).show();
-            }
-            IntentFilter filter = new IntentFilter();
-            filter.addAction(BluetoothDevice.ACTION_FOUND);
-            filter.addAction(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
-            filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
-            activity.registerReceiver(mReceiver, filter);
-        }
-    }
-
-    public static void stopScanning(Activity activity, BroadcastReceiver mReceiver){
-        try{
-            activity.unregisterReceiver(mReceiver);
-        } catch (Exception e){
-            // already unregistered
-        }
-    }
-
     public static void pairDevice(BluetoothDevice device) {
         try {
             Method m = device.getClass().getMethod("createBond", (Class[]) null);

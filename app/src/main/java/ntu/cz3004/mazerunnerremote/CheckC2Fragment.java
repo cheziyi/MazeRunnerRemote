@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -18,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,6 +40,8 @@ public class CheckC2Fragment extends Fragment implements View.OnClickListener, C
     private LinearLayout bluetoothControlLayout;
 
     private RecyclerView pairedDeviceRecyclerView;
+
+    private ProgressBar scanningProgressBar;
     private RecyclerView discoveredDevicesRecyclerView;
 
     private Button searchBluetoothBtn;
@@ -52,13 +56,23 @@ public class CheckC2Fragment extends Fragment implements View.OnClickListener, C
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        printLog("onCreateView() called");
         View view = inflater.inflate(R.layout.fragment_check_c2, container, false);
         bluetoothStatusTextView = view.findViewById(R.id.bluetoothStatusTextView);
         bluetoothSwitch = view.findViewById(R.id.bluetoothSwitch);
         bluetoothControlLayout = view.findViewById(R.id.bluetoothControlLayout);
         pairedDeviceRecyclerView = view.findViewById(R.id.pairedDeviceRecyclerView);
+        scanningProgressBar = view.findViewById(R.id.scanningProgressBar);
         discoveredDevicesRecyclerView = view.findViewById(R.id.discoveredDevicesRecyclerView);
         searchBluetoothBtn = view.findViewById(R.id.searchBluetoothBtn);
+
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(BluetoothDevice.ACTION_FOUND);
+        filter.addAction(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
+        filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
+        printLog("registerReceiver() called");
+        getActivity().registerReceiver(mReceiver, filter);
+
         return view;
     }
 
@@ -66,11 +80,14 @@ public class CheckC2Fragment extends Fragment implements View.OnClickListener, C
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        printLog("onViewCreated() called");
+
         //Paired Devices
         pairedDevicesAdapter = new AppBluetoothAdapter(new AppBluetoothAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(BluetoothDevice bluetoothDevice) {
                 //TODO: click on paired device
+                printLog("attempt to unpair device: " + bluetoothDevice.getName());
                 BluetoothManager.unpairDevice(bluetoothDevice);
             }
         });
@@ -81,8 +98,9 @@ public class CheckC2Fragment extends Fragment implements View.OnClickListener, C
         discoveredDevicesAdapter = new AppBluetoothAdapter(new AppBluetoothAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(BluetoothDevice bluetoothDevice) {
-                //TODO: click on discovered device.
-                BluetoothManager.pairDevice(bluetoothDevice);
+                if(bluetoothDevice.getBondState() == BluetoothDevice.BOND_NONE){
+                    BluetoothManager.pairDevice(bluetoothDevice);
+                }
             }
         });
         discoveredDevicesRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -93,6 +111,8 @@ public class CheckC2Fragment extends Fragment implements View.OnClickListener, C
         bluetoothSwitch.setChecked(BluetoothManager.isBtEnabled());
 
         searchBluetoothBtn.setOnClickListener(this);
+
+        getPairedDevices();
     }
 
 
@@ -125,12 +145,14 @@ public class CheckC2Fragment extends Fragment implements View.OnClickListener, C
                 searchBluetoothBtn.setVisibility(bluetoothSwitch.isChecked() ? View.VISIBLE : View.GONE);
                 if(bluetoothSwitch.isChecked()){
                     Log.v("Aungg", "isChecked");
-                    findPairedDevices();
+                    scanningProgressBar.setVisibility(View.GONE);
+                    searchBluetoothBtn.setEnabled(true);
+                    searchBluetoothBtn.setText("scan devices");
                 }
                 else{
                     Log.v("Aungg", "isNotChecked");
                     pairedDevicesAdapter.clear();
-                    pairedDevicesAdapter.clear();
+                    discoveredDevicesAdapter.clear();
                     BluetoothManager.getDefaultBtAdapter().cancelDiscovery();
                 }
                 break;
@@ -138,15 +160,38 @@ public class CheckC2Fragment extends Fragment implements View.OnClickListener, C
 
     }
 
-    private void findPairedDevices() {
+    @Override
+    public void onResume() {
+        super.onResume();
+        printLog("onResume() called");
 
-        //Start registering
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(BluetoothDevice.ACTION_FOUND);
-        filter.addAction(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
-        filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
-        getActivity().registerReceiver(mReceiver, filter);
+    }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        printLog("onCreate() called");
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        printLog("onDestroy() called");
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        printLog("onDestroyView() called");
+        printLog("unregisterReceiver() called");
+        getActivity().unregisterReceiver(mReceiver);
+
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        printLog("onPause() called");
     }
 
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -157,43 +202,45 @@ public class CheckC2Fragment extends Fragment implements View.OnClickListener, C
                 switch (action){
                     case BluetoothDevice.ACTION_FOUND:
                         // Discover new device
+                        printLog("ACTION_FOUND: " + device.getName() + " " + device.getAddress());
                         discoveredDevicesAdapter.add(device);
                         break;
                     case BluetoothDevice.ACTION_BOND_STATE_CHANGED:
-                        Toast.makeText(getActivity(), "state changed", Toast.LENGTH_SHORT).show();
+                        printLog("ACTION_BOND_STATE_CHANGED");
                         if(device.getBondState() == BluetoothDevice.BOND_BONDED){
                             //paired
-                            Toast.makeText(getActivity(), "paired", Toast.LENGTH_SHORT).show();
+                            printLog("device: " + device.getName() + " (PAIRED CALLBACK)");
                             pairedDevicesAdapter.add(device);
+                            discoveredDevicesAdapter.update(device);
+                        }
+                        else if(device.getBondState() == BluetoothDevice.BOND_BONDING){
+                            printLog("device: " + device.getName() + " (PAIRING CALLBACK)");
+                            discoveredDevicesAdapter.update(device);
                         }
                         else if(device.getBondState() == BluetoothDevice.BOND_NONE){
                             //unpaired
-                            Toast.makeText(getActivity(), "unpaired", Toast.LENGTH_SHORT).show();
+                            printLog("device: " + device.getName() + " (DONE CALLBACK)");
+                            pairedDevicesAdapter.remove(device);
+                            discoveredDevicesAdapter.update(device);
                         }
                         break;
                     case BluetoothAdapter.ACTION_STATE_CHANGED:
-                        Log.v("Aungg", "action state changed");
+                        printLog("ACTION_STATE_CHANGED");
                         final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE,
                                 BluetoothAdapter.ERROR);
                         switch (state) {
                             case BluetoothAdapter.STATE_OFF:
+                                printLog("STATE_OFF");
                                 break;
                             case BluetoothAdapter.STATE_TURNING_OFF:
+                                printLog("STATE_TURNING_OFF");
                                 break;
                             case BluetoothAdapter.STATE_ON:
-                                Set<BluetoothDevice> pairedDevices = BluetoothManager.getDefaultBtAdapter().getBondedDevices();
-                                Log.v("Aungg", String.valueOf(pairedDevices.size()));
-                                if (pairedDevices.size() > 0) {
-                                    // There are paired devices. Get the name and address of each paired device.
-                                    for (BluetoothDevice bluetoothDevice : pairedDevices) {
-                                        pairedDevicesAdapter.add(bluetoothDevice);
-                                    }
-                                }
-                                else{
-                                    //TODO: GUI to show that there is no paired devices.
-                                }
+                                printLog("STATE_ON");
+                                getPairedDevices();
                                 break;
                             case BluetoothAdapter.STATE_TURNING_ON:
+                                printLog("STATE_TURNING_ON");
                                 break;
                         }
                         break;
@@ -203,25 +250,45 @@ public class CheckC2Fragment extends Fragment implements View.OnClickListener, C
         }
     };
 
+    private void getPairedDevices() {
+        Set<BluetoothDevice> pairedDevices = BluetoothManager.getDefaultBtAdapter().getBondedDevices();
+        printLog("No. of paired devices: " + String.valueOf(pairedDevices.size()));
+        if (pairedDevices.size() > 0) {
+            // There are paired devices. Get the name and address of each paired device.
+            for (BluetoothDevice bluetoothDevice : pairedDevices) {
+                printLog("Found paired device: " + bluetoothDevice.getName() + " " + bluetoothDevice.getAddress());
+                pairedDevicesAdapter.add(bluetoothDevice);
+            }
+        }
+        else{
+            //TODO: GUI to show that there is no paired devices.
+        }
+    }
+
     @Override
     public void onClick(View view) {
 
         switch (view.getId()){
             case R.id.searchBluetoothBtn:
-                /*Intent myIntent = new Intent(getActivity(), BluetoothListActivity.class);
-                getActivity().startActivity(myIntent);*/
                 try {
-                    BluetoothManager.startScanning(getActivity(), mReceiver);
+                    printLog("startDiscovery() called");
+                    if(BluetoothAdapter.getDefaultAdapter().startDiscovery()){
+                        printLog("startDiscovery() success");
+                        scanningProgressBar.setVisibility(View.VISIBLE);
+                        searchBluetoothBtn.setText("scaning");
+                        searchBluetoothBtn.setEnabled(false);
+                    }
+                    else{
+                        printLog("startDiscovery() failed");
+                    }
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    printLog("Error: " + e.getMessage());
                 }
                 break;
         }
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        BluetoothManager.stopScanning(getActivity(), mReceiver);
+    private void printLog(String message){
+        Log.d("debug_c2", message);
     }
 }

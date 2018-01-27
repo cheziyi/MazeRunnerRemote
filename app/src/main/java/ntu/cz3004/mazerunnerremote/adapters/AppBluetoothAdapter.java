@@ -49,14 +49,35 @@ public class AppBluetoothAdapter extends RecyclerView.Adapter<BluetoothViewHolde
     }
 
     public void add(BluetoothDevice bluetoothDevice) {
-        Log.v("Aungg", "added");
-        for(BluetoothDevice device : bluetoothList){
-            if(device.getAddress().equals(bluetoothDevice.getAddress())){
+        for(int i = 0; i < bluetoothList.size(); i++) {
+            if(bluetoothList.get(i).getAddress().equals(bluetoothDevice.getAddress())){
                 return;
             }
         }
         bluetoothList.add(bluetoothDevice);
         notifyItemInserted(bluetoothList.size() - 1);
+    }
+
+    public void update(BluetoothDevice bluetoothDevice) {
+        for(int i = 0; i < bluetoothList.size(); i++) {
+            if(bluetoothList.get(i).getAddress().equals(bluetoothDevice.getAddress())){
+                //update device info
+                bluetoothList.remove(i);
+                bluetoothList.add(i, bluetoothDevice);
+                notifyItemRangeChanged(i, 1);
+                return;
+            }
+        }
+    }
+
+    public void remove(BluetoothDevice bluetoothDevice){
+        for(int i = 0; i < bluetoothList.size(); i++) {
+            if(bluetoothList.get(i).getAddress().equals(bluetoothDevice.getAddress())){
+                bluetoothList.remove(i);
+                notifyItemRemoved(i);
+                return;
+            }
+        }
     }
 
     public void clear() {

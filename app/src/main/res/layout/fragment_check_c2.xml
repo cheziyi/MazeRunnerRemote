@@ -88,6 +88,8 @@
                         android:text="Paired Devices"
                         android:textColor="@color/lightBlack"/>
 
+                    <include layout="@layout/divider" />
+
                     <android.support.v7.widget.RecyclerView
                         android:id="@+id/pairedDeviceRecyclerView"
                         android:layout_width="match_parent"
@@ -107,12 +109,30 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
-                    <TextView
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:padding="@dimen/full_margin"
-                        android:text="Available Devices"
-                        android:textColor="@color/lightBlack" />
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="@dimen/full_margin"
+                            android:text="Available Devices"
+                            android:textColor="@color/lightBlack" />
+
+                        <ProgressBar
+                            android:id="@+id/scanningProgressBar"
+                            android:layout_gravity="center"
+                            android:layout_width="14sp"
+                            android:layout_height="14sp" />
+
+
+                    </LinearLayout>
+
+
+
+                    <include layout="@layout/divider" />
 
                     <android.support.v7.widget.RecyclerView
                         android:id="@+id/discoveredDevicesRecyclerView"
