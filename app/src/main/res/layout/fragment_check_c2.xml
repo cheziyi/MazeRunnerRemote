@@ -125,7 +125,8 @@
                             android:id="@+id/scanningProgressBar"
                             android:layout_gravity="center"
                             android:layout_width="14sp"
-                            android:layout_height="14sp" />
+                            android:layout_height="14sp"
+                            android:visibility="gone"/>
 
 
                     </LinearLayout>

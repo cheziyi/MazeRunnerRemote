@@ -87,6 +87,9 @@ public class MainActivity extends AppCompatActivity
             case R.id.nav_manual:
                 replaceFragment(new ManualFragment(), "1");
                 break;
+            case R.id.nav_check_c1:
+                replaceFragment(new CheckC1Fragment(), "c1");
+                break;
             case R.id.nav_check_c2:
                 replaceFragment(new CheckC2Fragment(), "c2");
                 break;

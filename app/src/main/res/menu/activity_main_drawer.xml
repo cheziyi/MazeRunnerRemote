@@ -17,6 +17,10 @@
             <menu>
                 <group android:checkableBehavior="single">
                     <item
+                        android:id="@+id/nav_check_c1"
+                        android:icon="@drawable/ic_menu_c1"
+                        android:title="C1" />
+                    <item
                         android:id="@+id/nav_check_c2"
                         android:icon="@drawable/ic_menu_c2"
                         android:title="C2" />

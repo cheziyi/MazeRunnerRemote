@@ -29,6 +29,7 @@ import java.util.Set;
 
 import ntu.cz3004.mazerunnerremote.adapters.AppBluetoothAdapter;
 import ntu.cz3004.mazerunnerremote.managers.BluetoothManager;
+import ntu.cz3004.mazerunnerremote.threads.ConnectThread;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -70,6 +71,8 @@ public class CheckC2Fragment extends Fragment implements View.OnClickListener, C
         filter.addAction(BluetoothDevice.ACTION_FOUND);
         filter.addAction(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
         filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
+        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
+        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
         printLog("registerReceiver() called");
         getActivity().registerReceiver(mReceiver, filter);
 
@@ -108,11 +111,8 @@ public class CheckC2Fragment extends Fragment implements View.OnClickListener, C
 
         //initialise switch (in case bluetooth is on when opening app)
         bluetoothSwitch.setOnCheckedChangeListener(this); //set listener first
-        bluetoothSwitch.setChecked(BluetoothManager.isBtEnabled());
-
         searchBluetoothBtn.setOnClickListener(this);
-
-        getPairedDevices();
+        updateUI(BluetoothManager.isBtEnabled());
     }
 
 
@@ -140,24 +140,25 @@ public class CheckC2Fragment extends Fragment implements View.OnClickListener, C
         switch (compoundButton.getId()){
             case R.id.bluetoothSwitch:
                 BluetoothManager.setBtEnabled(bluetoothSwitch.isChecked(), this);
-                bluetoothStatusTextView.setText(bluetoothSwitch.isChecked() ? "Bluetooth (on)" : "Bluetooth (off)");
-                bluetoothControlLayout.setVisibility(bluetoothSwitch.isChecked() ? View.VISIBLE : View.GONE);
-                searchBluetoothBtn.setVisibility(bluetoothSwitch.isChecked() ? View.VISIBLE : View.GONE);
-                if(bluetoothSwitch.isChecked()){
-                    Log.v("Aungg", "isChecked");
-                    scanningProgressBar.setVisibility(View.GONE);
-                    searchBluetoothBtn.setEnabled(true);
-                    searchBluetoothBtn.setText("scan devices");
-                }
-                else{
-                    Log.v("Aungg", "isNotChecked");
-                    pairedDevicesAdapter.clear();
-                    discoveredDevicesAdapter.clear();
-                    BluetoothManager.getDefaultBtAdapter().cancelDiscovery();
-                }
                 break;
         }
 
+    }
+
+    private void updateUI(boolean isEnabled) {
+        bluetoothSwitch.setChecked(isEnabled);
+        bluetoothStatusTextView.setText(isEnabled ? "Bluetooth (on)" : "Bluetooth (off)");
+        bluetoothControlLayout.setVisibility(isEnabled ? View.VISIBLE : View.GONE);
+        searchBluetoothBtn.setVisibility(isEnabled ? View.VISIBLE : View.GONE);
+        if(isEnabled){
+            Log.v("Aungg", "isChecked");
+            getPairedDevices();
+        }
+        else{
+            Log.v("Aungg", "isNotChecked");
+            pairedDevicesAdapter.clear();
+            BluetoothManager.getDefaultBtAdapter().cancelDiscovery();
+        }
     }
 
     @Override
@@ -185,7 +186,6 @@ public class CheckC2Fragment extends Fragment implements View.OnClickListener, C
         printLog("onDestroyView() called");
         printLog("unregisterReceiver() called");
         getActivity().unregisterReceiver(mReceiver);
-
     }
 
     @Override
@@ -231,18 +231,32 @@ public class CheckC2Fragment extends Fragment implements View.OnClickListener, C
                         switch (state) {
                             case BluetoothAdapter.STATE_OFF:
                                 printLog("STATE_OFF");
+                                updateUI(false);
                                 break;
                             case BluetoothAdapter.STATE_TURNING_OFF:
                                 printLog("STATE_TURNING_OFF");
                                 break;
                             case BluetoothAdapter.STATE_ON:
                                 printLog("STATE_ON");
-                                getPairedDevices();
+                                updateUI(true);
                                 break;
                             case BluetoothAdapter.STATE_TURNING_ON:
                                 printLog("STATE_TURNING_ON");
                                 break;
                         }
+                        break;
+                    case BluetoothAdapter.ACTION_DISCOVERY_STARTED:
+                        printLog("ACTION_DISCOVERY_STARTED");
+                        scanningProgressBar.setVisibility(View.VISIBLE);
+                        searchBluetoothBtn.setEnabled(false);
+                        searchBluetoothBtn.setText("scanning");
+                        break;
+                    case BluetoothAdapter.ACTION_DISCOVERY_FINISHED:
+                        printLog("ACTION_DISCOVERY_FINISHED");
+                        scanningProgressBar.setVisibility(View.GONE);
+                        searchBluetoothBtn.setEnabled(true);
+                        searchBluetoothBtn.setText("scan devices");
+                        discoveredDevicesAdapter.clear();
                         break;
 
                 }
@@ -274,9 +288,6 @@ public class CheckC2Fragment extends Fragment implements View.OnClickListener, C
                     printLog("startDiscovery() called");
                     if(BluetoothAdapter.getDefaultAdapter().startDiscovery()){
                         printLog("startDiscovery() success");
-                        scanningProgressBar.setVisibility(View.VISIBLE);
-                        searchBluetoothBtn.setText("scaning");
-                        searchBluetoothBtn.setEnabled(false);
                     }
                     else{
                         printLog("startDiscovery() failed");
