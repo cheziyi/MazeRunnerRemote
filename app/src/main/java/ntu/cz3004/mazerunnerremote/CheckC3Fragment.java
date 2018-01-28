@@ -16,6 +16,14 @@ import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.gson.GsonBuilder;
+import com.google.gson.Gson;
+
+import ntu.cz3004.mazerunnerremote.dto.AckResponse;
+import ntu.cz3004.mazerunnerremote.dto.AckType;
+import ntu.cz3004.mazerunnerremote.dto.Direction;
+import ntu.cz3004.mazerunnerremote.dto.MoveCommand;
+import ntu.cz3004.mazerunnerremote.dto.Response;
 import ntu.cz3004.mazerunnerremote.engines.BotEngine;
 import ntu.cz3004.mazerunnerremote.services.BluetoothService;
 
@@ -59,7 +67,7 @@ public class CheckC3Fragment extends Fragment implements View.OnClickListener {
         BluetoothService.setMessageHandler(new Handler(new Handler.Callback() {
             @Override
             public boolean handleMessage(Message message) {
-                switch (message.what){
+                switch (message.what) {
                     case MESSAGE_READ:
                         byte[] readBuf = (byte[]) message.obj;
                         // construct a string from the valid bytes in the buffer
@@ -87,26 +95,27 @@ public class CheckC3Fragment extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View view) {
         String message = null;
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.upBtn:
                 botEngine.setHeading(BotEngine.Heading.UP);
-                message = "up";
+                message = new GsonBuilder().create().toJson(new MoveCommand(Direction.UP));
                 break;
             case R.id.leftBtn:
                 botEngine.setHeading(BotEngine.Heading.LEFT);
-                message = "left";
+                message = new GsonBuilder().create().toJson(new MoveCommand(Direction.LEFT));
                 break;
             case R.id.rightBtn:
                 botEngine.setHeading(BotEngine.Heading.RIGHT);
-                message = "right";
+                message = new GsonBuilder().create().toJson(new MoveCommand(Direction.RIGHT));
                 break;
             case R.id.downBtn:
                 botEngine.setHeading(BotEngine.Heading.DOWN);
-                message = "down";
+                message = new GsonBuilder().create().toJson(new MoveCommand(Direction.DOWN));
                 break;
         }
-        byte[] send = message.getBytes();
-        BluetoothService.write(send);
-        botEngine.setUpdated(false);
+        String response = BluetoothService.sendRequest(message);
+        AckResponse resp = new Gson().fromJson(response, AckResponse.class);
+        if (resp.geAckType() == AckType.OK)
+            botEngine.setUpdated(false);
     }
 }
