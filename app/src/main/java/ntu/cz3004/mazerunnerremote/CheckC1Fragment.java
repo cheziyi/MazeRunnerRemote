@@ -189,8 +189,7 @@ public class CheckC1Fragment extends Fragment implements View.OnClickListener {
         // Check that there's actually something to send
         if (message.length() > 0) {
             // Get the message bytes and tell the BluetoothService to write
-            byte[] send = message.getBytes();
-            BluetoothService.write(send);
+            BluetoothService.sendRequest(message);
         }
     }
 
