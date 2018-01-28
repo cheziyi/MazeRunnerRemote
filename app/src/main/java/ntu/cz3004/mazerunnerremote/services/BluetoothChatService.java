@@ -32,16 +32,16 @@ public class BluetoothChatService {
     // Member fields
     private final BluetoothAdapter mAdapter;
     private final Handler mHandler;
+    private final Handler connectionStateChangedHandler;
     private AcceptThread mAcceptThread;
     private ConnectThread mConnectThread;
     private ConnectedThread mConnectedThread;
     private int mState;
 
-    // Constants that indicate the current connection state
-    public static final int STATE_NONE = 0;       // we're doing nothing
-    public static final int STATE_LISTEN = 1;     // now listening for incoming connections
-    public static final int STATE_CONNECTING = 2; // now initiating an outgoing connection
-    public static final int STATE_CONNECTED = 3;  // now connected to a remote device
+    public static final int STATE_NONE = 1; // we're doing nothing
+    public static final int STATE_LISTEN = 2; // now listening for incoming connections
+    public static final int STATE_CONNECTING = 3; // now initiating an outgoing connection
+    public static final int STATE_CONNECTED = 4; // now connected to a remote device
 
     // Message types sent from the BluetoothChatService Handler
     public static final int MESSAGE_STATE_CHANGE = 1;
@@ -60,10 +60,11 @@ public class BluetoothChatService {
      * @param context The UI Activity Context
      * @param handler A Handler to send messages back to the UI Activity
      */
-    public BluetoothChatService(Context context, Handler handler) {
+    public BluetoothChatService(Context context, Handler handler, Handler connectionStateChangedHandler) {
         mAdapter = BluetoothAdapter.getDefaultAdapter();
         mState = STATE_NONE;
         mHandler = handler;
+        this.connectionStateChangedHandler = connectionStateChangedHandler;
     }
 
     /**
@@ -72,6 +73,9 @@ public class BluetoothChatService {
      * @param state An integer defining the current connection state
      */
     private synchronized void setState(int state) {
+        if(state != mState){
+            connectionStateChangedHandler.obtainMessage(state).sendToTarget();
+        }
         mState = state;
         // Give the new state to the Handler so the UI Activity can update
         mHandler.obtainMessage(MESSAGE_STATE_CHANGE, state, -1).sendToTarget();
@@ -410,5 +414,9 @@ public class BluetoothChatService {
             } catch (IOException e) {
             }
         }
+    }
+
+    private void printLog(String message){
+        Log.d("chatservice", message);
     }
 }

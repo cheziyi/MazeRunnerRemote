@@ -8,7 +8,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import ntu.cz3004.mazerunnerremote.R;
-import ntu.cz3004.mazerunnerremote.adapters.AppBluetoothAdapter;
+import ntu.cz3004.mazerunnerremote.adapters.BluetoothListAdapter;
 
 /**
  * Created by Aung on 1/26/2018.
@@ -20,7 +20,7 @@ public class BluetoothViewHolder extends RecyclerView.ViewHolder implements View
     private TextView btName;
 
     private BluetoothDevice bluetoothDevice;
-    private AppBluetoothAdapter.OnItemClickListener onItemClickListener;
+    private BluetoothListAdapter.OnItemClickListener onItemClickListener;
 
     public BluetoothViewHolder(View itemView) {
         super(itemView);
@@ -28,7 +28,7 @@ public class BluetoothViewHolder extends RecyclerView.ViewHolder implements View
         btName = itemView.findViewById(R.id.btName);
     }
 
-    public void bind(BluetoothDevice bluetoothDevice, final AppBluetoothAdapter.OnItemClickListener onItemClickListener) {
+    public void bind(BluetoothDevice bluetoothDevice, final BluetoothListAdapter.OnItemClickListener onItemClickListener) {
         this.bluetoothDevice = bluetoothDevice;
         this.onItemClickListener = onItemClickListener;
         String deviceStatus = "";
