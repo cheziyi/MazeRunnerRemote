@@ -17,7 +17,7 @@ import ntu.cz3004.mazerunnerremote.view_holders.BluetoothViewHolder;
  * Created by Aung on 1/26/2018.
  */
 
-public class AppBluetoothAdapter extends RecyclerView.Adapter<BluetoothViewHolder> {
+public class BluetoothListAdapter extends RecyclerView.Adapter<BluetoothViewHolder> {
 
     private OnItemClickListener onItemClickListener;
 
@@ -27,7 +27,7 @@ public class AppBluetoothAdapter extends RecyclerView.Adapter<BluetoothViewHolde
 
     private List<BluetoothDevice> bluetoothList;
 
-    public AppBluetoothAdapter(OnItemClickListener onItemClickListener) {
+    public BluetoothListAdapter(OnItemClickListener onItemClickListener) {
         this.onItemClickListener = onItemClickListener;
         bluetoothList = new ArrayList<>();
     }

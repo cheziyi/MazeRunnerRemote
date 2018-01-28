@@ -15,11 +15,11 @@ import ntu.cz3004.mazerunnerremote.view_holders.MessageViewHolder;
  * Created by Aung on 1/27/2018.
  */
 
-public class ChatAdapter extends RecyclerView.Adapter<MessageViewHolder> {
+public class MessageListAdapter extends RecyclerView.Adapter<MessageViewHolder> {
 
     List<String> messageList;
 
-    public ChatAdapter() {
+    public MessageListAdapter() {
         messageList = new ArrayList<>();
     }
 
@@ -42,6 +42,11 @@ public class ChatAdapter extends RecyclerView.Adapter<MessageViewHolder> {
     public void add(String writeMessage) {
         messageList.add(writeMessage);
         notifyItemInserted(messageList.size() - 1);
+    }
+
+    public void clear(){
+        messageList = new ArrayList<>();
+        notifyDataSetChanged();
     }
 
 }

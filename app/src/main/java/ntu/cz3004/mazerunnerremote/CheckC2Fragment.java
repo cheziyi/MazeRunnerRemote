@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -23,13 +22,11 @@ import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 
 import java.util.Set;
 
-import ntu.cz3004.mazerunnerremote.adapters.AppBluetoothAdapter;
+import ntu.cz3004.mazerunnerremote.adapters.BluetoothListAdapter;
 import ntu.cz3004.mazerunnerremote.managers.BluetoothManager;
-import ntu.cz3004.mazerunnerremote.threads.ConnectThread;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -47,8 +44,8 @@ public class CheckC2Fragment extends Fragment implements View.OnClickListener, C
 
     private Button searchBluetoothBtn;
 
-    private AppBluetoothAdapter pairedDevicesAdapter;
-    private AppBluetoothAdapter discoveredDevicesAdapter;
+    private BluetoothListAdapter pairedDevicesAdapter;
+    private BluetoothListAdapter discoveredDevicesAdapter;
 
     public CheckC2Fragment() {
         // Required empty public constructor
@@ -86,7 +83,7 @@ public class CheckC2Fragment extends Fragment implements View.OnClickListener, C
         printLog("onViewCreated() called");
 
         //Paired Devices
-        pairedDevicesAdapter = new AppBluetoothAdapter(new AppBluetoothAdapter.OnItemClickListener() {
+        pairedDevicesAdapter = new BluetoothListAdapter(new BluetoothListAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(BluetoothDevice bluetoothDevice) {
                 //TODO: click on paired device
@@ -98,7 +95,7 @@ public class CheckC2Fragment extends Fragment implements View.OnClickListener, C
         pairedDeviceRecyclerView.setAdapter(pairedDevicesAdapter);
 
         //Discovered Devices
-        discoveredDevicesAdapter = new AppBluetoothAdapter(new AppBluetoothAdapter.OnItemClickListener() {
+        discoveredDevicesAdapter = new BluetoothListAdapter(new BluetoothListAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(BluetoothDevice bluetoothDevice) {
                 if(bluetoothDevice.getBondState() == BluetoothDevice.BOND_NONE){

@@ -6,22 +6,55 @@
     android:background="@color/lightGrey"
     tools:context="ntu.cz3004.mazerunnerremote.MainFragment">
 
-    <Spinner
-        android:id="@+id/deviceSpinner"
+    <TextView
+        android:padding="@dimen/full_margin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/full_margin"
+        android:text="Choose target device"
+        android:textColor="@color/lightBlack"/>
+
+    <include layout="@layout/divider" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
         android:background="@android:color/white">
 
-    </Spinner>
+        <Spinner
+            android:id="@+id/deviceSpinner"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:padding="@dimen/full_margin"
+            android:backgroundTint="@color/colorPrimary">
+        </Spinner>
+
+        <Button
+            android:id="@+id/connectBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="connect"
+            android:background="@drawable/button_primary"
+            style="@style/PrimaryButton"/>
+
+    </LinearLayout>
+
+
+
+    <include layout="@layout/divider" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/messageRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:overScrollMode="never"
+        android:background="@color/lightGrey">
 
     </android.support.v7.widget.RecyclerView>
+
+    <include layout="@layout/divider" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -29,16 +62,20 @@
         android:orientation="horizontal">
 
         <EditText
+            android:padding="@dimen/full_margin"
             android:id="@+id/messageEditText"
             android:layout_width="0dp"
             android:layout_weight="1"
-            android:layout_height="wrap_content" />
+            android:layout_height="match_parent"
+            android:background="@android:color/white"/>
 
         <Button
             android:id="@+id/sendBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="send"/>
+            android:text="send"
+            android:background="@drawable/button_primary"
+            style="@style/PrimaryButton"/>
 
     </LinearLayout>
 
