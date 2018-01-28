@@ -43,6 +43,7 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         replaceFragment(new MainFragment(), "0");
+        replaceFragment(new MainFragment(), "0");
     }
 
     @Override
@@ -92,6 +93,9 @@ public class MainActivity extends AppCompatActivity
                 break;
             case R.id.nav_check_c2:
                 replaceFragment(new CheckC2Fragment(), "c2");
+                break;
+            case R.id.nav_check_c3:
+                replaceFragment(new CheckC3Fragment(), "c3");
                 break;
         }
         drawer.closeDrawer(GravityCompat.START);
