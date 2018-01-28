@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_send_pre_def_1"
+        android:orderInCategory="100"
+        android:title="PreDef1"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_send_pre_def_2"
+        android:orderInCategory="100"
+        android:title="PreDef2"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_configure"
+        android:orderInCategory="100"
+        android:title="configure"
+        app:showAsAction="never" />
+</menu>
