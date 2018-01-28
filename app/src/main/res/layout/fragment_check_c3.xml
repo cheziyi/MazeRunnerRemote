@@ -5,6 +5,12 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <TextView
+        android:id="@+id/deviceStatusTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Device Status: "/>
+
     <ntu.cz3004.mazerunnerremote.engines.BotEngine
         android:id="@+id/botEngine"
         android:layout_width="match_parent"

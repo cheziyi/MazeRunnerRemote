@@ -28,17 +28,17 @@ import java.util.Set;
 
 import ntu.cz3004.mazerunnerremote.adapters.MessageListAdapter;
 import ntu.cz3004.mazerunnerremote.managers.BluetoothManager;
-import ntu.cz3004.mazerunnerremote.services.BluetoothChatService;
+import ntu.cz3004.mazerunnerremote.services.BluetoothService;
 import ntu.cz3004.mazerunnerremote.wrappers.BluetoothDeviceWrapper;
 
-import static ntu.cz3004.mazerunnerremote.services.BluetoothChatService.MESSAGE_DEVICE_NAME;
-import static ntu.cz3004.mazerunnerremote.services.BluetoothChatService.MESSAGE_READ;
-import static ntu.cz3004.mazerunnerremote.services.BluetoothChatService.MESSAGE_TOAST;
-import static ntu.cz3004.mazerunnerremote.services.BluetoothChatService.MESSAGE_WRITE;
-import static ntu.cz3004.mazerunnerremote.services.BluetoothChatService.STATE_CONNECTED;
-import static ntu.cz3004.mazerunnerremote.services.BluetoothChatService.STATE_CONNECTING;
-import static ntu.cz3004.mazerunnerremote.services.BluetoothChatService.STATE_LISTEN;
-import static ntu.cz3004.mazerunnerremote.services.BluetoothChatService.STATE_NONE;
+import static ntu.cz3004.mazerunnerremote.services.BluetoothService.MESSAGE_DEVICE_NAME;
+import static ntu.cz3004.mazerunnerremote.services.BluetoothService.MESSAGE_READ;
+import static ntu.cz3004.mazerunnerremote.services.BluetoothService.MESSAGE_TOAST;
+import static ntu.cz3004.mazerunnerremote.services.BluetoothService.MESSAGE_WRITE;
+import static ntu.cz3004.mazerunnerremote.services.BluetoothService.STATE_CONNECTED;
+import static ntu.cz3004.mazerunnerremote.services.BluetoothService.STATE_CONNECTING;
+import static ntu.cz3004.mazerunnerremote.services.BluetoothService.STATE_LISTEN;
+import static ntu.cz3004.mazerunnerremote.services.BluetoothService.STATE_NONE;
 
 /**
  * Created by Aung on 1/27/2018.
@@ -54,15 +54,12 @@ public class CheckC1Fragment extends Fragment implements View.OnClickListener {
 
     private List<BluetoothDeviceWrapper> deviceList;
 
-    private BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-    private BluetoothChatService mChatService = null;
     BluetoothDevice selectedBluetoothDevice = null;
-    private StringBuffer mOutStringBuffer;
 
     private MessageListAdapter messageListAdapter;
     private RecyclerView messageRecyclerView;
 
-    // The Handler that gets information back from the BluetoothChatService
+    // The Handler that gets information back from the BluetoothService
     private final Handler mHandler = new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(Message message) {
@@ -154,7 +151,7 @@ public class CheckC1Fragment extends Fragment implements View.OnClickListener {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 if(selectedIndex != i || i == 0){
-                    mChatService.stop();
+                    BluetoothService.stop();
                 }
                 selectedIndex = i;
                 selectedBluetoothDevice = (selectedIndex == 0) ? null : deviceList.get(selectedIndex).getBluetoothDevice();
@@ -166,8 +163,8 @@ public class CheckC1Fragment extends Fragment implements View.OnClickListener {
             }
         });
 
-        mChatService = new BluetoothChatService(getActivity(), mHandler, connectionStateChangedHandler);
-        mOutStringBuffer = new StringBuffer("");
+        BluetoothService.setConnectionStateChangedHandler(connectionStateChangedHandler);
+        BluetoothService.setMessageHandler(mHandler);
 
         //Paired Devices
         messageListAdapter = new MessageListAdapter();
@@ -185,17 +182,15 @@ public class CheckC1Fragment extends Fragment implements View.OnClickListener {
     private void sendMessage(String message) {
 
         // Check that we're actually connected before trying anything
-        if (mChatService.getState() != STATE_CONNECTED) {
-            printLog(deviceList.get(selectedIndex).getBluetoothDevice().getName() + " is not connected" + mChatService.getState());
+        if (BluetoothService.getState() != STATE_CONNECTED) {
+            printLog(deviceList.get(selectedIndex).getBluetoothDevice().getName() + " is not connected" + BluetoothService.getState());
             return;
         }
         // Check that there's actually something to send
         if (message.length() > 0) {
-            // Get the message bytes and tell the BluetoothChatService to write
+            // Get the message bytes and tell the BluetoothService to write
             byte[] send = message.getBytes();
-            mChatService.write(send);
-            // Reset out string buffer to zero and clear the edit text field
-            mOutStringBuffer.setLength(0);
+            BluetoothService.write(send);
         }
     }
 
@@ -213,7 +208,7 @@ public class CheckC1Fragment extends Fragment implements View.OnClickListener {
                 break;
             case R.id.connectBtn:
                 if(selectedBluetoothDevice != null){
-                    mChatService.connect(selectedBluetoothDevice);
+                    BluetoothService.connect(selectedBluetoothDevice);
                 }
                 break;
         }
