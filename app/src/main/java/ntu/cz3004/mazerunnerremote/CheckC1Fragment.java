@@ -79,13 +79,8 @@ public class CheckC1Fragment extends Fragment implements View.OnClickListener {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.sendBtn:
-                if (bt.getServiceState() == BluetoothState.STATE_CONNECTED) {
-                    bt.send(messageEditText.getText().toString(), false);
-                    messageEditText.setText("");
-                } else {
-                    Intent intent = new Intent(getContext().getApplicationContext(), DeviceList.class);
-                    startActivityForResult(intent, BluetoothState.REQUEST_CONNECT_DEVICE);
-                }
+                bt.send(messageEditText.getText().toString(), false);
+                messageEditText.setText("");
                 break;
         }
     }

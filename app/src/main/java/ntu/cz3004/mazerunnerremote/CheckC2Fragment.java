@@ -1,5 +1,6 @@
 package ntu.cz3004.mazerunnerremote;
 
+import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
@@ -119,19 +120,20 @@ public class CheckC2Fragment extends Fragment implements View.OnClickListener, C
     }
 
 
-    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == BluetoothManager.REQUEST_ENABLE_BT) {
-            if (resultCode == RESULT_OK) {
-                Toast.makeText(getActivity(), "bluetooth enabled", Toast.LENGTH_LONG).show();
+        if (requestCode == BluetoothState.REQUEST_CONNECT_DEVICE) {
+            if (resultCode == Activity.RESULT_OK)
+                bt.connect(data);
+        } else if (requestCode == BluetoothState.REQUEST_ENABLE_BT) {
+            if (resultCode == Activity.RESULT_OK) {
+                bt.setupService();
+                bt.startService(BluetoothState.DEVICE_ANDROID);
             } else {
-                Toast.makeText(getActivity(), "Failed to enable bluetooth", Toast.LENGTH_LONG).show();
-                bluetoothSwitch.setChecked(false);
+                Toast.makeText(getContext().getApplicationContext()
+                        , "Bluetooth was not enabled."
+                        , Toast.LENGTH_SHORT).show();
             }
         }
-
     }
 
     @Override

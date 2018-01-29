@@ -94,21 +94,6 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == BluetoothState.REQUEST_CONNECT_DEVICE) {
-            if (resultCode == Activity.RESULT_OK)
-                bt.connect(data);
-        } else if (requestCode == BluetoothState.REQUEST_ENABLE_BT) {
-            if (resultCode == Activity.RESULT_OK) {
-                bt.setupService();
-                bt.startService(BluetoothState.DEVICE_ANDROID);
-            } else {
-                Toast.makeText(this.getApplicationContext()
-                        , "Bluetooth was not enabled."
-                        , Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
 
     @Override
     public void onBackPressed() {
