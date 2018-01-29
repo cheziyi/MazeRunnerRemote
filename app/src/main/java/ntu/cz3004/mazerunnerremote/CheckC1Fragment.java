@@ -19,6 +19,7 @@ import app.akexorcist.bluetotohspp.library.BluetoothState;
 import app.akexorcist.bluetotohspp.library.DeviceList;
 import ntu.cz3004.mazerunnerremote.adapters.MessageListAdapter;
 
+import static ntu.cz3004.mazerunnerremote.managers.BluetoothManager.SendCommand;
 import static ntu.cz3004.mazerunnerremote.managers.BluetoothManager.bt;
 
 
@@ -79,7 +80,8 @@ public class CheckC1Fragment extends Fragment implements View.OnClickListener {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.sendBtn:
-                bt.send(messageEditText.getText().toString(), false);
+                SendCommand(messageEditText.getText().toString());
+                messageListAdapter.add("[Android]: " + messageEditText.getText().toString());
                 messageEditText.setText("");
                 break;
         }

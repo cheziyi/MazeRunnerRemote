@@ -9,9 +9,14 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+
+import app.akexorcist.bluetotohspp.library.BluetoothSPP;
 import ntu.cz3004.mazerunnerremote.dto.Commands;
+import ntu.cz3004.mazerunnerremote.dto.Response;
 import ntu.cz3004.mazerunnerremote.engines.BotEngine;
 
+import static ntu.cz3004.mazerunnerremote.managers.BluetoothManager.SendCommand;
 import static ntu.cz3004.mazerunnerremote.managers.BluetoothManager.bt;
 
 //import static ntu.cz3004.mazerunnerremote.services.BluetoothService.MESSAGE_READ;
@@ -39,6 +44,13 @@ public class CheckC3Fragment extends Fragment implements View.OnClickListener {
         leftBtn = view.findViewById(R.id.leftBtn);
         rightBtn = view.findViewById(R.id.rightBtn);
         downBtn = view.findViewById(R.id.downBtn);
+
+        bt.setOnDataReceivedListener(new BluetoothSPP.OnDataReceivedListener() {
+            public void onDataReceived(byte[] data, String message) {
+                Response resp = new Gson().fromJson(message, Response.class);
+                deviceStatusTextView.setText(resp.getStatus());
+            }
+        });
         return view;
     }
 
@@ -67,9 +79,9 @@ public class CheckC3Fragment extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View view) {
         String message = null;
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.upBtn:
-                bt.send(Commands.FORWARD, false);
+                SendCommand(Commands.FORWARD);
                 break;
             case R.id.leftBtn:
                 botEngine.setHeading(BotEngine.Heading.LEFT);
@@ -84,8 +96,6 @@ public class CheckC3Fragment extends Fragment implements View.OnClickListener {
                 message = "down";
                 break;
         }
-        byte[] send = message.getBytes();
-//        BluetoothService.write(send);
         botEngine.setUpdated(false);
     }
 }
