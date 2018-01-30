@@ -97,6 +97,9 @@ public class MainActivity extends AppCompatActivity
             case R.id.nav_check_c3:
                 replaceFragment(new CheckC3Fragment(), "c3");
                 break;
+            case R.id.nav_check_c567:
+                replaceFragment(new CheckC567Fragment(), "c5, c6, c7");
+                break;
         }
         drawer.closeDrawer(GravityCompat.START);
         return true;
