@@ -18,20 +18,24 @@ import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import app.akexorcist.bluetotohspp.library.BluetoothState;
 import app.akexorcist.bluetotohspp.library.DeviceList;
 import ntu.cz3004.mazerunnerremote.managers.BluetoothManager;
+
+import static ntu.cz3004.mazerunnerremote.managers.BluetoothManager.bt;
 
 /**
  * Created by Aung on 1/30/2018.
  */
 
-public class ConnectBluetoothActivity extends DeviceList implements CompoundButton.OnCheckedChangeListener {
+public class ConnectBluetoothActivity extends DeviceList implements CompoundButton.OnCheckedChangeListener, View.OnClickListener {
 
     private TextView bluetoothStatusTextView;
     private Switch bluetoothSwitch;
     private ProgressBar scanningProgressBar;
     private LinearLayout deviceListLayout;
     private Button scanButton;
+    private Button disconnectButton;
 
     private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
@@ -78,6 +82,12 @@ public class ConnectBluetoothActivity extends DeviceList implements CompoundButt
     private void updateUI(boolean isBluetoothOn) {
         bluetoothSwitch.setChecked(isBluetoothOn);
         deviceListLayout.setVisibility(isBluetoothOn ? View.VISIBLE : View.GONE);
+
+        boolean isConnected = bt.getServiceState() == BluetoothState.STATE_CONNECTED;
+        scanButton.setEnabled(!isConnected);
+        scanButton.setText(isConnected ? "Connected to " + bt.getConnectedDeviceName() + " (" + bt.getConnectedDeviceAddress() + ")" : "scan devices");
+        disconnectButton.setVisibility(isConnected ? View.VISIBLE : View.GONE);
+
     }
 
     @Override
@@ -90,7 +100,9 @@ public class ConnectBluetoothActivity extends DeviceList implements CompoundButt
         scanningProgressBar = findViewById(R.id.scanningProgressBar);
         deviceListLayout = findViewById(R.id.deviceListLayout);
         scanButton = findViewById(R.id.button_scan);
+        disconnectButton = findViewById(R.id.disconnectButton);
         bluetoothSwitch.setOnCheckedChangeListener(this);
+        disconnectButton.setOnClickListener(this);
     }
 
     @Override
@@ -103,7 +115,7 @@ public class ConnectBluetoothActivity extends DeviceList implements CompoundButt
         filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
         filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
         registerReceiver(broadcastReceiver, filter);
-        updateUI(BluetoothManager.isBtEnabled());
+        updateUI(bt.isBluetoothEnabled());
     }
 
     @Override
@@ -117,6 +129,16 @@ public class ConnectBluetoothActivity extends DeviceList implements CompoundButt
         switch (compoundButton.getId()) {
             case R.id.bluetoothSwitch:
                 BluetoothManager.setBtEnabled(bluetoothSwitch.isChecked(), this);
+                break;
+        }
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.disconnectButton:
+                bt.disconnect();
+                updateUI(bt.isBluetoothEnabled());
                 break;
         }
     }

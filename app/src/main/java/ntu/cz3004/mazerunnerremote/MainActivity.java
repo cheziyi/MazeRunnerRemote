@@ -141,9 +141,8 @@ public class MainActivity extends AppCompatActivity
                 replaceFragment(new CheckC1Fragment(), "c1");
                 break;
             case R.id.nav_check_c2:
-                replaceFragment(new CheckC2Fragment(), "c2");
-                /*Intent intent = new Intent(this, ConnectBluetoothActivity.class);
-                startActivityForResult(intent, BluetoothState.REQUEST_CONNECT_DEVICE);*/
+                Intent intent = new Intent(this, ConnectBluetoothActivity.class);
+                startActivityForResult(intent, BluetoothState.REQUEST_CONNECT_DEVICE);
                 break;
             case R.id.nav_check_c3:
                 replaceFragment(new CheckC3Fragment(), "c3");
