@@ -297,7 +297,7 @@ public class CheckC2Fragment extends Fragment implements View.OnClickListener, C
                 if (bt.getServiceState() == BluetoothState.STATE_CONNECTED) {
                     bt.disconnect();
                 } else {
-                    Intent intent = new Intent(getContext().getApplicationContext(), DeviceList.class);
+                    Intent intent = new Intent(getContext().getApplicationContext(), ConnectBluetoothActivity.class);
                     startActivityForResult(intent, BluetoothState.REQUEST_CONNECT_DEVICE);
                 }
         }

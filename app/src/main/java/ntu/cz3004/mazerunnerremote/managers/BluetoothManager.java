@@ -1,5 +1,6 @@
 package ntu.cz3004.mazerunnerremote.managers;
 
+import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
@@ -37,6 +38,19 @@ public class BluetoothManager {
         } else {
             if (getDefaultBtAdapter().disable()) {
                 Toast.makeText(fragment.getActivity(), "bluetooth disabled", Toast.LENGTH_LONG).show();
+            } else {
+                //TODO: fail to disable BT
+            }
+        }
+    }
+
+    public static void setBtEnabled(boolean setEnabled, Activity activity) {
+        if (setEnabled) {
+            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            activity.startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+        } else {
+            if (getDefaultBtAdapter().disable()) {
+                Toast.makeText(activity, "bluetooth disabled", Toast.LENGTH_LONG).show();
             } else {
                 //TODO: fail to disable BT
             }
