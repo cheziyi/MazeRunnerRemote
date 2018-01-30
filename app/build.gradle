@@ -29,4 +29,5 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
     compile 'com.akexorcist:bluetoothspp:1.0.0'
     compile 'com.google.code.gson:gson:2.8.2'
+    compile 'org.apache.commons:commons-lang3:3.7'
 }

@@ -14,10 +14,13 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.google.gson.Gson;
+
 import app.akexorcist.bluetotohspp.library.BluetoothSPP;
 import app.akexorcist.bluetotohspp.library.BluetoothState;
 import app.akexorcist.bluetotohspp.library.DeviceList;
 import ntu.cz3004.mazerunnerremote.adapters.MessageListAdapter;
+import ntu.cz3004.mazerunnerremote.dto.Response;
 
 import static ntu.cz3004.mazerunnerremote.managers.BluetoothManager.SendCommand;
 import static ntu.cz3004.mazerunnerremote.managers.BluetoothManager.bt;
@@ -52,6 +55,9 @@ public class CheckC1Fragment extends Fragment implements View.OnClickListener {
         bt.setOnDataReceivedListener(new BluetoothSPP.OnDataReceivedListener() {
             public void onDataReceived(byte[] data, String message) {
                 messageListAdapter.add("[PC]: " + message);
+//                Response resp = new Gson().fromJson(message, Response.class);
+//                if (resp.getGrid() != null)
+//                    messageListAdapter.add("[GRID]: " + new Gson().toJson(resp.getGrid()));
             }
         });
         return view;
