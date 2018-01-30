@@ -96,6 +96,5 @@ public class CheckC3Fragment extends Fragment implements View.OnClickListener {
                 message = "down";
                 break;
         }
-        botEngine.setUpdated(false);
     }
 }

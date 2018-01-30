@@ -11,6 +11,14 @@ import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import com.google.gson.Gson;
+
+import app.akexorcist.bluetotohspp.library.BluetoothSPP;
+import ntu.cz3004.mazerunnerremote.dto.Response;
+import ntu.cz3004.mazerunnerremote.managers.BluetoothManager;
+
+import static ntu.cz3004.mazerunnerremote.managers.BluetoothManager.bt;
+
 /**
  * Created by Aung on 1/28/2018.
  */
@@ -26,7 +34,6 @@ public class BotEngine extends SurfaceView implements Runnable {
     private Heading heading = Heading.RIGHT;
 
     private boolean isRunning;
-    private boolean isUpdated = true;
     private boolean isAutoUpdating = true;
     private boolean isEditMode = false;
 
@@ -46,8 +53,11 @@ public class BotEngine extends SurfaceView implements Runnable {
     private int botCanvasX;
     private int botCanvasY;
     private Point wayPoint;
+    private boolean[][] grid;
 
     // The size in blocks of the runnable area
+    private final int BOT_START_POSITION_X = 0;
+    private final int BOT_START_POSITION_Y = 0;
     private final int NUM_BLOCKS_WIDTH = 15;
     private final int NUM_BLOCKS_HEIGHT = 20;
     private final int BOT_SIZE = 3;
@@ -72,30 +82,35 @@ public class BotEngine extends SurfaceView implements Runnable {
 
     public BotEngine(Context context) {
         super(context);
+        start();
     }
 
     public BotEngine(Context context, AttributeSet attrs) {
         super(context, attrs);
+        start();
     }
 
     public BotEngine(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        start();
     }
 
     public BotEngine(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
+        start();
     }
 
     public void start() {
 
-        // Initialize the drawing objects
+        //Initialize the drawing objects
         surfaceHolder = getHolder();
         paint = new Paint();
 
         //Initialise Bot position
-        botX = 0;
-        botY = 0;
+        botX = BOT_START_POSITION_X;
+        botY = BOT_START_POSITION_Y;
 
+        //Add callback to get surface width and height only when the view is created
         surfaceHolder.addCallback(new SurfaceHolder.Callback() {
             @Override
             public void surfaceCreated(SurfaceHolder surfaceHolder) {
@@ -104,15 +119,13 @@ public class BotEngine extends SurfaceView implements Runnable {
 
             @Override
             public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-
                 //get surfaceWidth and surfaceHeight
                 surfaceWidth = width;
                 surfaceHeight = height;
-
                 blockWidth = surfaceWidth / NUM_BLOCKS_WIDTH;
                 blockHeight = surfaceHeight / NUM_BLOCKS_HEIGHT;
-                startRunning();
-
+                //Initialise time frame
+                nextFrameTime = System.currentTimeMillis();
             }
 
             @Override
@@ -120,11 +133,6 @@ public class BotEngine extends SurfaceView implements Runnable {
 
             }
         });
-    }
-
-    private void startRunning() {
-        // Setup nextFrameTime so an update is triggered
-        nextFrameTime = System.currentTimeMillis();
     }
 
     private void moveBot(){
@@ -164,13 +172,19 @@ public class BotEngine extends SurfaceView implements Runnable {
 
     @Override
     public void run() {
+        bt.setOnDataReceivedListener(new BluetoothSPP.OnDataReceivedListener() {
+            public void onDataReceived(byte[] data, String message) {
+                printLog(message);
+                update(message);
+//                Response resp = new Gson().fromJson(message, Response.class);
+//                if (resp.getGrid() != null)
+//                    messageListAdapter.add("[GRID]: " + new Gson().toJson(resp.getGrid()));
+            }
+        });
         while (isRunning) {
-            // Update 10 times a second
             if(updateRequired()) {
-                update();
-                if(isAutoUpdating){
-                    draw();
-                }
+                if(isAutoUpdating) BluetoothManager.SendCommand("sendArena");
+                draw();
             }
         }
     }
@@ -178,17 +192,39 @@ public class BotEngine extends SurfaceView implements Runnable {
     private boolean updateRequired() {
         // Are we due to update the frame
         if(nextFrameTime <= System.currentTimeMillis()){
-            // Tenth of a second has passed
-
             // Setup when the next update will be triggered
             nextFrameTime = System.currentTimeMillis() + MILLIS_PER_SECOND / FPS;
-
-            // Return true so that the update and draw
-            // functions are executed
+            // Return true so that the update and draw functions are executed
             return true;
         }
-
         return false;
+    }
+
+    private void update(String messageReceived) {
+        Response resp = new Gson().fromJson(messageReceived, Response.class);
+        Response.RobotPosition robotPosition = resp.getRobotPosition();
+        if(robotPosition != null){
+            botX = robotPosition.getX();
+            botY = robotPosition.getY();
+            switch (robotPosition.getDirection()){
+                case 0:
+                    heading = Heading.UP;
+                    break;
+                case 90:
+                    heading = Heading.RIGHT;
+                    break;
+                case 180:
+                    heading = Heading.DOWN;
+                    break;
+                case 270:
+                    heading = Heading.LEFT;
+                    break;
+            }
+        }
+        if(resp.getGrid() != null){
+            grid = resp.getGrid();
+        }
+        //moveBot();
     }
 
     public void draw() {
@@ -211,6 +247,14 @@ public class BotEngine extends SurfaceView implements Runnable {
                     }
                     else {
                         canvas.drawRect((x * blockWidth) + tileBorderWidth, (y * blockHeight) + tileBorderWidth, (x * blockWidth) + blockWidth - tileBorderWidth, (y * blockHeight) + blockHeight - tileBorderWidth, paint);
+                    }
+                    if(grid != null){
+                        printLog(String.valueOf(grid.length));
+                        if(grid[y][x]){
+                            paint.setColor(Color.argb(255, 255, 255, 0));
+                            canvas.drawRect((x * blockWidth) + tileBorderWidth, (y * blockHeight) + tileBorderWidth, (x * blockWidth) + blockWidth - tileBorderWidth, (y * blockHeight) + blockHeight - tileBorderWidth, paint);
+                            paint.setColor(Color.argb(255, 0, 0, 255));
+                        }
                     }
                 }
             }
@@ -283,14 +327,6 @@ public class BotEngine extends SurfaceView implements Runnable {
         canvas.drawPath(path, paint);
     }
 
-    private void update() {
-        if(!isUpdated){
-            moveBot();
-            setUpdated(true);
-        }
-
-    }
-
     public boolean touchBot() {
         return (touchX > (botX * blockWidth)) && (touchX < ((botX * blockWidth) + (blockWidth * BOT_SIZE)) && (touchY > (botY * blockHeight)) && (touchY < ((botY * blockHeight) + (blockHeight * BOT_SIZE))));
     }
@@ -312,10 +348,6 @@ public class BotEngine extends SurfaceView implements Runnable {
 
     public void setHeading(Heading heading) {
         this.heading = heading;
-    }
-
-    public void setUpdated(boolean updated) {
-        isUpdated = updated;
     }
 
     public void setAutoUpdating(boolean autoUpdating) {
@@ -393,6 +425,14 @@ public class BotEngine extends SurfaceView implements Runnable {
 
     public void setWaypoint() {
         this.wayPoint = new Point(touchX / blockWidth, touchY / blockHeight);
+    }
+
+    public int getBotX() {
+        return botX;
+    }
+
+    public int getBotY() {
+        return botY;
     }
 
 }

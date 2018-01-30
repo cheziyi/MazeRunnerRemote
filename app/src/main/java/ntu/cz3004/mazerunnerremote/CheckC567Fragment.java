@@ -17,9 +17,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import ntu.cz3004.mazerunnerremote.engines.BotEngine;
-import ntu.cz3004.mazerunnerremote.services.BluetoothService;
-
-import static ntu.cz3004.mazerunnerremote.services.BluetoothService.MESSAGE_READ;
+import ntu.cz3004.mazerunnerremote.managers.BluetoothManager;
 
 /**
  * Created by Aung on 1/28/2018.
@@ -53,7 +51,6 @@ public class CheckC567Fragment extends Fragment implements View.OnClickListener,
         updateButton.setOnClickListener(this);
         botEngine.setOnTouchListener(this);
         botEngine.setOnLongClickListener(this);
-        botEngine.start();
     }
 
     @Override
@@ -73,7 +70,8 @@ public class CheckC567Fragment extends Fragment implements View.OnClickListener,
 
         switch (view.getId()){
             case R.id.updateButton:
-                botEngine.draw();
+                BluetoothManager.SendCommand("sendArena");
+                //botEngine.draw();
                 break;
         }
 
@@ -122,6 +120,7 @@ public class CheckC567Fragment extends Fragment implements View.OnClickListener,
                         return true;
                     case MotionEvent.ACTION_UP:
                         if(botEngine.isEditMode()){
+                            BluetoothManager.SendCommand("coordinate (" + botEngine.getBotX() + "," + botEngine.getBotY() + ")");
                             botEngine.setEditMode(false);
                         }
                         return false;
