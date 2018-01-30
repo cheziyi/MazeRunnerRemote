@@ -1,13 +1,18 @@
 package ntu.cz3004.mazerunnerremote;
 
+import android.Manifest;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -24,6 +29,8 @@ import static ntu.cz3004.mazerunnerremote.managers.BluetoothManager.bt;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    private static final int ACCESS_LOCATION_REQUEST_CODE = 1;
 
     private DrawerLayout drawer;
 
@@ -141,8 +148,12 @@ public class MainActivity extends AppCompatActivity
                 replaceFragment(new CheckC1Fragment(), "c1");
                 break;
             case R.id.nav_check_c2:
-                Intent intent = new Intent(this, ConnectBluetoothActivity.class);
-                startActivityForResult(intent, BluetoothState.REQUEST_CONNECT_DEVICE);
+                //check for location permission
+                if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                    startBlutoothIntent();
+                } else {
+                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},ACCESS_LOCATION_REQUEST_CODE);
+                }
                 break;
             case R.id.nav_check_c3:
                 replaceFragment(new CheckC3Fragment(), "c3");
@@ -150,6 +161,27 @@ public class MainActivity extends AppCompatActivity
         }
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void startBlutoothIntent(){
+        Intent intent = new Intent(this, ConnectBluetoothActivity.class);
+        startActivityForResult(intent, BluetoothState.REQUEST_CONNECT_DEVICE);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case ACCESS_LOCATION_REQUEST_CODE:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    startBlutoothIntent();
+                } else {
+                    Toast.makeText(getApplicationContext(), "Please give location permission in the setting.", Toast.LENGTH_SHORT).show();
+                }
+                break;
+            default:
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
     }
 
     @Override
@@ -161,7 +193,7 @@ public class MainActivity extends AppCompatActivity
         } else if (requestCode == BluetoothState.REQUEST_ENABLE_BT) {
             if (resultCode == Activity.RESULT_OK) {
                 bt.setupService();
-                bt.startService(BluetoothState.DEVICE_ANDROID);
+                bt.startService(BluetoothState.DEVICE_OTHER);
             } else {
                 Toast.makeText(this
                         , "Bluetooth was not enabled."
