@@ -1,25 +1,25 @@
 package ntu.cz3004.mazerunnerremote;
 
-import android.graphics.Point;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.TextView;
 
-import ntu.cz3004.mazerunnerremote.engines.BotEngine;
-import ntu.cz3004.mazerunnerremote.services.BluetoothService;
+import com.google.gson.Gson;
 
-import static ntu.cz3004.mazerunnerremote.services.BluetoothService.MESSAGE_READ;
+import app.akexorcist.bluetotohspp.library.BluetoothSPP;
+import ntu.cz3004.mazerunnerremote.dto.Commands;
+import ntu.cz3004.mazerunnerremote.dto.Response;
+import ntu.cz3004.mazerunnerremote.engines.BotEngine;
+
+import static ntu.cz3004.mazerunnerremote.managers.BluetoothManager.SendCommand;
+import static ntu.cz3004.mazerunnerremote.managers.BluetoothManager.bt;
+
+//import static ntu.cz3004.mazerunnerremote.services.BluetoothService.MESSAGE_READ;
 
 /**
  * Created by Aung on 1/28/2018.
@@ -44,6 +44,13 @@ public class CheckC3Fragment extends Fragment implements View.OnClickListener {
         leftBtn = view.findViewById(R.id.leftBtn);
         rightBtn = view.findViewById(R.id.rightBtn);
         downBtn = view.findViewById(R.id.downBtn);
+
+        bt.setOnDataReceivedListener(new BluetoothSPP.OnDataReceivedListener() {
+            public void onDataReceived(byte[] data, String message) {
+                Response resp = new Gson().fromJson(message, Response.class);
+                deviceStatusTextView.setText(resp.getStatus());
+            }
+        });
         return view;
     }
 
@@ -55,21 +62,6 @@ public class CheckC3Fragment extends Fragment implements View.OnClickListener {
         rightBtn.setOnClickListener(this);
         downBtn.setOnClickListener(this);
         botEngine.start();
-
-        BluetoothService.setMessageHandler(new Handler(new Handler.Callback() {
-            @Override
-            public boolean handleMessage(Message message) {
-                switch (message.what){
-                    case MESSAGE_READ:
-                        byte[] readBuf = (byte[]) message.obj;
-                        // construct a string from the valid bytes in the buffer
-                        String readMessage = new String(readBuf, 0, message.arg1);
-                        deviceStatusTextView.setText(readMessage);
-                        return true;
-                }
-                return false;
-            }
-        }));
     }
 
     @Override
@@ -87,10 +79,9 @@ public class CheckC3Fragment extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View view) {
         String message = null;
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.upBtn:
-                botEngine.setHeading(BotEngine.Heading.UP);
-                message = "up";
+                SendCommand(Commands.FORWARD);
                 break;
             case R.id.leftBtn:
                 botEngine.setHeading(BotEngine.Heading.LEFT);
@@ -105,8 +96,6 @@ public class CheckC3Fragment extends Fragment implements View.OnClickListener {
                 message = "down";
                 break;
         }
-        byte[] send = message.getBytes();
-        BluetoothService.write(send);
         botEngine.setUpdated(false);
     }
 }
