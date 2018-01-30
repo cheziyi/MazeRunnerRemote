@@ -141,7 +141,8 @@ public class MainActivity extends AppCompatActivity
                 replaceFragment(new CheckC1Fragment(), "c1");
                 break;
             case R.id.nav_check_c2:
-                replaceFragment(new CheckC2Fragment(), "c2");
+                Intent intent = new Intent(this, ConnectBluetoothActivity.class);
+                startActivityForResult(intent, BluetoothState.REQUEST_CONNECT_DEVICE);
                 break;
             case R.id.nav_check_c3:
                 replaceFragment(new CheckC3Fragment(), "c3");
@@ -149,6 +150,24 @@ public class MainActivity extends AppCompatActivity
         }
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == BluetoothState.REQUEST_CONNECT_DEVICE) {
+            if (resultCode == Activity.RESULT_OK)
+                bt.connect(data);
+        } else if (requestCode == BluetoothState.REQUEST_ENABLE_BT) {
+            if (resultCode == Activity.RESULT_OK) {
+                bt.setupService();
+                bt.startService(BluetoothState.DEVICE_ANDROID);
+            } else {
+                Toast.makeText(this
+                        , "Bluetooth was not enabled."
+                        , Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     private void replaceFragment(Fragment fragment, String TAG) {
