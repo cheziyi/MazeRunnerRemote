@@ -43,10 +43,19 @@
 
     </LinearLayout>
 
-    <ntu.cz3004.mazerunnerremote.engines.BotEngine
-        android:id="@+id/botEngine"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_weight="1">
+        <ntu.cz3004.mazerunnerremote.engines.BotEngine
+            android:id="@+id/botEngine"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+        <FrameLayout
+            android:id="@+id/bugfixview"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:background="@android:color/transparent"/>
+    </RelativeLayout>
 
 </LinearLayout>

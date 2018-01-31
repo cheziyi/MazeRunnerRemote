@@ -14,6 +14,7 @@ import android.view.SurfaceView;
 import com.google.gson.Gson;
 
 import app.akexorcist.bluetotohspp.library.BluetoothSPP;
+import ntu.cz3004.mazerunnerremote.dto.Command;
 import ntu.cz3004.mazerunnerremote.dto.Response;
 import ntu.cz3004.mazerunnerremote.managers.BluetoothManager;
 
@@ -183,7 +184,7 @@ public class BotEngine extends SurfaceView implements Runnable {
         });
         while (isRunning) {
             if(updateRequired()) {
-                if(isAutoUpdating) BluetoothManager.SendCommand("sendArena");
+                if(isAutoUpdating) BluetoothManager.SendCommand(new Command(Command.CommandTypes.SEND_INFO));
                 draw();
             }
         }

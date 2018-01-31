@@ -1,9 +1,7 @@
-package ntu.cz3004.mazerunnerremote;
+package ntu.cz3004.mazerunnerremote.fragments;
 
-import android.graphics.Point;
+import android.content.Context;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -16,14 +14,18 @@ import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import ntu.cz3004.mazerunnerremote.R;
+import ntu.cz3004.mazerunnerremote.dto.Command;
 import ntu.cz3004.mazerunnerremote.engines.BotEngine;
 import ntu.cz3004.mazerunnerremote.managers.BluetoothManager;
+
+import static ntu.cz3004.mazerunnerremote.managers.BluetoothManager.bt;
 
 /**
  * Created by Aung on 1/28/2018.
  */
 
-public class CheckC567Fragment extends Fragment implements View.OnClickListener, CompoundButton.OnCheckedChangeListener, View.OnLongClickListener, View.OnTouchListener {
+public class CheckC567Fragment extends MainFragment implements View.OnClickListener, CompoundButton.OnCheckedChangeListener, View.OnLongClickListener, View.OnTouchListener {
 
     //Checklist C7 components
     private TextView updateModeTextVuew;
@@ -54,6 +56,11 @@ public class CheckC567Fragment extends Fragment implements View.OnClickListener,
     }
 
     @Override
+    int getNavigationMenuItemId() {
+        return R.id.nav_check_c567;
+    }
+
+    @Override
     public void onPause() {
         super.onPause();
         botEngine.pause();
@@ -70,7 +77,7 @@ public class CheckC567Fragment extends Fragment implements View.OnClickListener,
 
         switch (view.getId()){
             case R.id.updateButton:
-                BluetoothManager.SendCommand("sendArena");
+                BluetoothManager.SendCommand(new Command(Command.CommandTypes.SEND_INFO));
                 //botEngine.draw();
                 break;
         }
@@ -120,7 +127,7 @@ public class CheckC567Fragment extends Fragment implements View.OnClickListener,
                         return true;
                     case MotionEvent.ACTION_UP:
                         if(botEngine.isEditMode()){
-                            BluetoothManager.SendCommand("coordinate (" + botEngine.getBotX() + "," + botEngine.getBotY() + ")");
+                            bt.send("coordinate (" + botEngine.getBotX() + "," + botEngine.getBotY() + ")", false);
                             botEngine.setEditMode(false);
                         }
                         return false;
