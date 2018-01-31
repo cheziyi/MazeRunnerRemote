@@ -8,8 +8,10 @@ import android.graphics.Path;
 import android.graphics.Point;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
 
 import com.google.gson.Gson;
 
@@ -24,7 +26,7 @@ import static ntu.cz3004.mazerunnerremote.managers.BluetoothManager.bt;
  * Created by Aung on 1/28/2018.
  */
 
-public class BotEngine extends SurfaceView implements Runnable {
+public class BotEngine extends SurfaceView implements Runnable, View.OnLongClickListener, View.OnTouchListener {
 
     // Our map thread for the main loop
     private Thread thread = null;
@@ -134,6 +136,9 @@ public class BotEngine extends SurfaceView implements Runnable {
 
             }
         });
+
+        setOnLongClickListener(this);
+        setOnTouchListener(this);
     }
 
     private void moveBot(){
@@ -355,14 +360,6 @@ public class BotEngine extends SurfaceView implements Runnable {
         isAutoUpdating = autoUpdating;
     }
 
-    public void setEditMode(boolean isEditMode) {
-        this.isEditMode = isEditMode;
-    }
-
-    public boolean isEditMode() {
-        return isEditMode;
-    }
-
     public void setTouchX(int touchX) {
         this.touchX = touchX;
     }
@@ -428,12 +425,38 @@ public class BotEngine extends SurfaceView implements Runnable {
         this.wayPoint = new Point(touchX / blockWidth, touchY / blockHeight);
     }
 
-    public int getBotX() {
-        return botX;
+    @Override
+    public boolean onLongClick(View view) {
+        if(touchBot()){
+            isEditMode = true;
+            return true;
+        }
+        setWaypoint();
+        return false;
     }
 
-    public int getBotY() {
-        return botY;
+    @Override
+    public boolean onTouch(View view, MotionEvent motionEvent) {
+        int[] touchCoor = new int[2];
+        touchCoor[0] = (int) motionEvent.getX();
+        touchCoor[1] = (int) motionEvent.getY();
+        setTouchX((int) motionEvent.getX()); //getX() return coordinate RELATIVE to the view dispatched it
+        setTouchY((int) motionEvent.getY());
+        switch (motionEvent.getAction()){
+            case MotionEvent.ACTION_DOWN:
+                setBotCanvas(touchCoor);
+                return false; //return false so that onLongClick get triggered
+            case MotionEvent.ACTION_MOVE:
+                setBotPosition(touchCoor);
+                return true;
+            case MotionEvent.ACTION_UP:
+                if(isEditMode){
+                    bt.send("coordinate (" + botX + "," + botY + ")", false);
+                    isEditMode = false;
+                }
+                return false;
+        }
+        return false;
     }
 
 }

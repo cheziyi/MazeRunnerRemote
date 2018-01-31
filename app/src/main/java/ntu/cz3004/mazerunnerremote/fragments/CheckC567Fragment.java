@@ -25,7 +25,7 @@ import static ntu.cz3004.mazerunnerremote.managers.BluetoothManager.bt;
  * Created by Aung on 1/28/2018.
  */
 
-public class CheckC567Fragment extends MainFragment implements View.OnClickListener, CompoundButton.OnCheckedChangeListener, View.OnLongClickListener, View.OnTouchListener {
+public class CheckC567Fragment extends MainFragment implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
 
     //Checklist C7 components
     private TextView updateModeTextVuew;
@@ -51,8 +51,6 @@ public class CheckC567Fragment extends MainFragment implements View.OnClickListe
         super.onViewCreated(view, savedInstanceState);
         updateModeSwitch.setOnCheckedChangeListener(this);
         updateButton.setOnClickListener(this);
-        botEngine.setOnTouchListener(this);
-        botEngine.setOnLongClickListener(this);
     }
 
     @Override
@@ -91,50 +89,6 @@ public class CheckC567Fragment extends MainFragment implements View.OnClickListe
                 changeUpdateMode(isChecked);
                 break;
         }
-    }
-
-    @Override
-    public boolean onLongClick(View view) {
-        switch (view.getId()){
-            case R.id.botEngine:
-                if(botEngine.touchBot()){
-                    printLog("long");
-                    botEngine.setEditMode(true);
-                    return true;
-                }
-                botEngine.setWaypoint();
-                break;
-
-        }
-        return false;
-    }
-
-    @Override
-    public boolean onTouch(View view, MotionEvent motionEvent) {
-        switch (view.getId()){
-            case R.id.botEngine:
-                int[] touchCoor = new int[2];
-                touchCoor[0] = (int) motionEvent.getX();
-                touchCoor[1] = (int) motionEvent.getY();
-                botEngine.setTouchX((int) motionEvent.getX()); //getX() return coordinate RELATIVE to the view dispatched it
-                botEngine.setTouchY((int) motionEvent.getY());
-                switch (motionEvent.getAction()){
-                    case MotionEvent.ACTION_DOWN:
-                        botEngine.setBotCanvas(touchCoor);
-                        return false; //return false so that onLongClick get triggered
-                    case MotionEvent.ACTION_MOVE:
-                        botEngine.setBotPosition(touchCoor);
-                        return true;
-                    case MotionEvent.ACTION_UP:
-                        if(botEngine.isEditMode()){
-                            bt.send("coordinate (" + botEngine.getBotX() + "," + botEngine.getBotY() + ")", false);
-                            botEngine.setEditMode(false);
-                        }
-                        return false;
-                }
-                break;
-        }
-        return false;
     }
 
     private void changeUpdateMode(boolean isManualMode) {
