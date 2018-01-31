@@ -125,10 +125,11 @@ public class ConnectBluetoothActivity extends DeviceList implements CompoundButt
     }
 
     @Override
-    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+    public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
         switch (compoundButton.getId()) {
             case R.id.bluetoothSwitch:
-                BluetoothManager.setBtEnabled(bluetoothSwitch.isChecked(), this);
+                BluetoothManager.setBtEnabled(isChecked, this);
+                bluetoothStatusTextView.setText(isChecked ? "Bluetooth (on)" : "Bluetooth (off)");
                 break;
         }
     }
