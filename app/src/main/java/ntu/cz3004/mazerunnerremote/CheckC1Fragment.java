@@ -86,7 +86,7 @@ public class CheckC1Fragment extends Fragment implements View.OnClickListener {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.sendBtn:
-                SendCommand(messageEditText.getText().toString());
+                bt.send(messageEditText.getText().toString(), false);
                 messageListAdapter.add("[Android]: " + messageEditText.getText().toString());
                 messageEditText.setText("");
                 break;

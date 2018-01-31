@@ -12,7 +12,7 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 
 import app.akexorcist.bluetotohspp.library.BluetoothSPP;
-import ntu.cz3004.mazerunnerremote.dto.Commands;
+import ntu.cz3004.mazerunnerremote.dto.Command;
 import ntu.cz3004.mazerunnerremote.dto.Response;
 import ntu.cz3004.mazerunnerremote.engines.BotEngine;
 
@@ -81,7 +81,7 @@ public class CheckC3Fragment extends Fragment implements View.OnClickListener {
         String message = null;
         switch (view.getId()) {
             case R.id.upBtn:
-                SendCommand(Commands.FORWARD);
+                SendCommand(new Command(Command.CommandTypes.FORWARD));
                 break;
             case R.id.leftBtn:
                 botEngine.setHeading(BotEngine.Heading.LEFT);
