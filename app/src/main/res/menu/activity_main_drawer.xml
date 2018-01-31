@@ -5,7 +5,7 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_main"
+            android:id="@+id/nav_traverse"
             android:icon="@drawable/ic_menu_main"
             android:title="Traverse mode" />
         <item
@@ -29,13 +29,9 @@
                         android:icon="@drawable/ic_menu_manual"
                         android:title="C3, C4" />
                     <item
-                        android:id="@+id/nav_share"
-                        android:icon="@drawable/ic_menu_share"
-                        android:title="Setting" />
-                    <item
-                        android:id="@+id/nav_send"
-                        android:icon="@drawable/ic_menu_send"
-                        android:title="Calibrate" />
+                        android:id="@+id/nav_check_c567"
+                        android:icon="@drawable/ic_menu_c567"
+                        android:title="C5, C6, C7" />
                 </group>
             </menu>
         </item>

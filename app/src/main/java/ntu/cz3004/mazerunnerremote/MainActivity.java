@@ -2,7 +2,6 @@ package ntu.cz3004.mazerunnerremote;
 
 import android.Manifest;
 import android.app.Activity;
-import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -24,15 +23,23 @@ import android.widget.Toast;
 
 import app.akexorcist.bluetotohspp.library.BluetoothSPP;
 import app.akexorcist.bluetotohspp.library.BluetoothState;
+import ntu.cz3004.mazerunnerremote.fragments.CheckC1Fragment;
+import ntu.cz3004.mazerunnerremote.fragments.CheckC3Fragment;
+import ntu.cz3004.mazerunnerremote.fragments.CheckC567Fragment;
+import ntu.cz3004.mazerunnerremote.fragments.ManualFragment;
+import ntu.cz3004.mazerunnerremote.fragments.OnFragmentViewCreatedListener;
+import ntu.cz3004.mazerunnerremote.fragments.TraverseFragment;
+import ntu.cz3004.mazerunnerremote.managers.BluetoothManager;
 
 import static ntu.cz3004.mazerunnerremote.managers.BluetoothManager.bt;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, OnFragmentViewCreatedListener {
 
     private static final int ACCESS_LOCATION_REQUEST_CODE = 1;
 
     private DrawerLayout drawer;
+    private NavigationView navigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,16 +55,15 @@ public class MainActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        replaceFragment(new MainFragment(), "0");
-        replaceFragment(new MainFragment(), "0");
+        replaceFragment(new TraverseFragment(), "0");
 
         bt = new BluetoothSPP(getApplicationContext());
 
         if (!bt.isBluetoothAvailable()) {
-            Toast.makeText(getApplicationContext()
+            Toast.makeText(this
                     , "Bluetooth is not available"
                     , Toast.LENGTH_SHORT).show();
         }
@@ -91,8 +97,7 @@ public class MainActivity extends AppCompatActivity
     public void onStart() {
         super.onStart();
         if (!bt.isBluetoothEnabled()) {
-            Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(intent, BluetoothState.REQUEST_ENABLE_BT);
+            BluetoothManager.setBtEnabled(true, this);
         } else {
             if (!bt.isServiceAvailable()) {
                 bt.setupService();
@@ -138,8 +143,8 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         switch (item.getItemId()) {
-            case R.id.nav_main:
-                replaceFragment(new MainFragment(), "0");
+            case R.id.nav_traverse:
+                replaceFragment(new TraverseFragment(), "0");
                 break;
             case R.id.nav_manual:
                 replaceFragment(new ManualFragment(), "1");
@@ -157,6 +162,9 @@ public class MainActivity extends AppCompatActivity
                 break;
             case R.id.nav_check_c3:
                 replaceFragment(new CheckC3Fragment(), "c3");
+                break;
+            case R.id.nav_check_c567:
+                replaceFragment(new CheckC567Fragment(), "c5, c6, c7");
                 break;
         }
         drawer.closeDrawer(GravityCompat.START);
@@ -212,5 +220,10 @@ public class MainActivity extends AppCompatActivity
             fragmentTransaction.commit();
         }
 
+    }
+
+    @Override
+    public void onViewCreated(int id) {
+        navigationView.setCheckedItem(id);
     }
 }

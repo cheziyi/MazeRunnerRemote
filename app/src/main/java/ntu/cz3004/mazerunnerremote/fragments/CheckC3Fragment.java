@@ -1,5 +1,6 @@
-package ntu.cz3004.mazerunnerremote;
+package ntu.cz3004.mazerunnerremote.fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 
 import app.akexorcist.bluetotohspp.library.BluetoothSPP;
+import ntu.cz3004.mazerunnerremote.R;
 import ntu.cz3004.mazerunnerremote.dto.Command;
 import ntu.cz3004.mazerunnerremote.dto.Response;
 import ntu.cz3004.mazerunnerremote.engines.BotEngine;
@@ -25,7 +27,7 @@ import static ntu.cz3004.mazerunnerremote.managers.BluetoothManager.bt;
  * Created by Aung on 1/28/2018.
  */
 
-public class CheckC3Fragment extends Fragment implements View.OnClickListener {
+public class CheckC3Fragment extends MainFragment implements View.OnClickListener {
 
     private TextView deviceStatusTextView;
     private BotEngine botEngine;
@@ -65,6 +67,11 @@ public class CheckC3Fragment extends Fragment implements View.OnClickListener {
     }
 
     @Override
+    int getNavigationMenuItemId() {
+        return R.id.nav_check_c3;
+    }
+
+    @Override
     public void onPause() {
         super.onPause();
         botEngine.pause();
@@ -96,6 +103,5 @@ public class CheckC3Fragment extends Fragment implements View.OnClickListener {
                 message = "down";
                 break;
         }
-        botEngine.setUpdated(false);
     }
 }

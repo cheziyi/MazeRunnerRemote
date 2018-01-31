@@ -1,6 +1,6 @@
-package ntu.cz3004.mazerunnerremote;
+package ntu.cz3004.mazerunnerremote.fragments;
 
-import android.content.Intent;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -14,15 +14,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.google.gson.Gson;
-
 import app.akexorcist.bluetotohspp.library.BluetoothSPP;
-import app.akexorcist.bluetotohspp.library.BluetoothState;
-import app.akexorcist.bluetotohspp.library.DeviceList;
+import ntu.cz3004.mazerunnerremote.R;
 import ntu.cz3004.mazerunnerremote.adapters.MessageListAdapter;
-import ntu.cz3004.mazerunnerremote.dto.Response;
 
-import static ntu.cz3004.mazerunnerremote.managers.BluetoothManager.SendCommand;
 import static ntu.cz3004.mazerunnerremote.managers.BluetoothManager.bt;
 
 
@@ -30,7 +25,7 @@ import static ntu.cz3004.mazerunnerremote.managers.BluetoothManager.bt;
  * Created by Aung on 1/27/2018.
  */
 
-public class CheckC1Fragment extends Fragment implements View.OnClickListener {
+public class CheckC1Fragment extends MainFragment implements View.OnClickListener {
 
     private EditText messageEditText;
     private Button sendBtn;
@@ -72,6 +67,11 @@ public class CheckC1Fragment extends Fragment implements View.OnClickListener {
         messageListAdapter = new MessageListAdapter();
         messageRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         messageRecyclerView.setAdapter(messageListAdapter);
+    }
+
+    @Override
+    int getNavigationMenuItemId() {
+        return R.id.nav_check_c1;
     }
 
     @Override
