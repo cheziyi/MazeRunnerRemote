@@ -11,7 +11,7 @@ import android.widget.Toast;
 import java.lang.reflect.Method;
 
 import app.akexorcist.bluetotohspp.library.BluetoothSPP;
-import ntu.cz3004.mazerunnerremote.dto.Commands;
+import ntu.cz3004.mazerunnerremote.dto.Command;
 
 /**
  * Created by Aung on 1/26/2018.
@@ -40,8 +40,8 @@ public class BluetoothManager {
         }
     }
 
-    public static void SendCommand(String command){
-        bt.send(command, false);
+    public static void SendCommand(Command command){
+        bt.send(command.getCommandString(), false);
     }
 
 }
