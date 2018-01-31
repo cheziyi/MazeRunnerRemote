@@ -14,4 +14,22 @@ public class Commands {
     public final static String BEGIN_EXPLORE = "beginExplore";
     public final static String BEGIN_FASTPATH = "beginFastest";
     public final static String SEND_INFO = "sendArena";
+
+    // Everything below are not supported by AMT
+    public final static String AUTO_START = "autoStart";
+    public final static String AUTO_STOP = "autoStop";
+
+    public class WaypointCommand {
+        private int x;
+        private int y;
+
+        public WaypointCommand(int x, int y) {
+            this.x = x;
+            this.y = y;
+        }
+
+        public String ToString() {
+            return "wayPoint," + x + "," + y;
+        }
+    }
 }
