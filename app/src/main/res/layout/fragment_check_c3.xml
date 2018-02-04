@@ -1,80 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <TextView
+        android:id="@+id/deviceStatusTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Device Status: "/>
+
+    <ntu.cz3004.mazerunnerremote.engines.BotEngine
+        android:id="@+id/botEngine"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
 
     <GridLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginVertical="40dp"
         android:columnCount="3"
-        android:rowCount="4">
+        android:rowCount="3"
+        android:layout_gravity="center">
 
         <Space
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1" />
-
-        <ImageButton
-            android:id="@+id/imageButtonForward"
-            android:layout_width="77dp"
-            android:layout_height="77dp"
-            app:srcCompat="@drawable/forward" />
-
+        <Button
+            android:id="@+id/upBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="up"/>
         <Space
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1" />
-
-        <ImageButton
-            android:id="@+id/imageButtonRotateLeft"
-            android:layout_width="77dp"
-            android:layout_height="77dp"
-            app:srcCompat="@drawable/rotleft" />
-
+        <Button
+            android:id="@+id/leftBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="left"/>
         <Space
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1" />
-
-        <ImageButton
-            android:id="@+id/imageButtonRotateRight"
-            android:layout_width="77dp"
-            android:layout_height="77dp"
-            app:srcCompat="@drawable/rotright" />
-
-        <ImageButton
-            android:id="@+id/imageButtonStrafeLeft"
-            android:layout_width="77dp"
-            android:layout_height="77dp"
-            app:srcCompat="@drawable/strafeleft" />
-
+        <Button
+            android:id="@+id/rightBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="right"/>
         <Space
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1" />
-
-        <ImageButton
-            android:id="@+id/imageButtonStrafeRight"
-            android:layout_width="77dp"
-            android:layout_height="77dp"
-            app:srcCompat="@drawable/straferight" />
-
-        <Space
+        <Button
+            android:id="@+id/downBtn"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1" />
-
-        <ImageButton
-            android:id="@+id/imageButtonReverse"
-            android:layout_width="77dp"
-            android:layout_height="77dp"
-            app:srcCompat="@drawable/reverse" />
-
+            android:layout_height="wrap_content"
+            android:text="down"/>
         <Space
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
@@ -82,14 +67,5 @@
 
 
     </GridLayout>
-
-    <TextView
-        android:id="@+id/deviceStatusTextView"
-        android:layout_width="212dp"
-        android:layout_height="49dp"
-        android:layout_gravity="center"
-        android:layout_marginVertical="20dp"
-        android:text="Device Status: "
-        android:textSize="20dp" />
 
 </LinearLayout>

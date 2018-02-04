@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -31,31 +30,27 @@ import static ntu.cz3004.mazerunnerremote.managers.BluetoothManager.bt;
 public class CheckC3Fragment extends MainFragment implements View.OnClickListener {
 
     private TextView deviceStatusTextView;
-    private ImageButton forwardBtn;
-    private ImageButton rotateLeftBtn;
-    private ImageButton rotateRightBtn;
-    private ImageButton reverseBtn;
-    private ImageButton strafeRightBtn;
-    private ImageButton strafeLeftBtn;
+    private BotEngine botEngine;
+    private Button upBtn;
+    private Button leftBtn;
+    private Button rightBtn;
+    private Button downBtn;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_check_c3, container, false);
         deviceStatusTextView = view.findViewById(R.id.deviceStatusTextView);
-        forwardBtn = view.findViewById(R.id.imageButtonForward);
-        rotateLeftBtn = view.findViewById(R.id.imageButtonRotateLeft);
-        rotateRightBtn = view.findViewById(R.id.imageButtonRotateRight);
-        reverseBtn = view.findViewById(R.id.imageButtonReverse);
-        strafeRightBtn = view.findViewById(R.id.imageButtonStrafeRight);
-        strafeLeftBtn = view.findViewById(R.id.imageButtonStrafeLeft);
+        botEngine = view.findViewById(R.id.botEngine);
+        upBtn = view.findViewById(R.id.upBtn);
+        leftBtn = view.findViewById(R.id.leftBtn);
+        rightBtn = view.findViewById(R.id.rightBtn);
+        downBtn = view.findViewById(R.id.downBtn);
 
         bt.setOnDataReceivedListener(new BluetoothSPP.OnDataReceivedListener() {
             public void onDataReceived(byte[] data, String message) {
                 Response resp = new Gson().fromJson(message, Response.class);
-                if(resp.getStatus() != null) {
-                    deviceStatusTextView.setText(resp.getStatus());
-                }
+                deviceStatusTextView.setText(resp.getStatus());
             }
         });
         return view;
@@ -64,12 +59,11 @@ public class CheckC3Fragment extends MainFragment implements View.OnClickListene
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        forwardBtn.setOnClickListener(this);
-        strafeLeftBtn.setOnClickListener(this);
-        strafeRightBtn.setOnClickListener(this);
-        reverseBtn.setOnClickListener(this);
-        rotateLeftBtn.setOnClickListener(this);
-        rotateRightBtn.setOnClickListener(this);
+        upBtn.setOnClickListener(this);
+        leftBtn.setOnClickListener(this);
+        rightBtn.setOnClickListener(this);
+        downBtn.setOnClickListener(this);
+        botEngine.start();
     }
 
     @Override
@@ -80,34 +74,33 @@ public class CheckC3Fragment extends MainFragment implements View.OnClickListene
     @Override
     public void onPause() {
         super.onPause();
+        botEngine.pause();
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        botEngine.resume();
     }
 
     @Override
     public void onClick(View view) {
         String message = null;
         switch (view.getId()) {
-            case R.id.imageButtonForward:
+            case R.id.upBtn:
                 SendCommand(new Command(Command.CommandTypes.FORWARD));
                 break;
-            case R.id.imageButtonRotateLeft:
-                SendCommand(new Command(Command.CommandTypes.ROTATE_LEFT));
+            case R.id.leftBtn:
+                botEngine.setHeading(BotEngine.Heading.LEFT);
+                message = "left";
                 break;
-            case R.id.imageButtonRotateRight:
-                SendCommand(new Command(Command.CommandTypes.ROTATE_RIGHT));
+            case R.id.rightBtn:
+                botEngine.setHeading(BotEngine.Heading.RIGHT);
+                message = "right";
                 break;
-            case R.id.imageButtonReverse:
-                SendCommand(new Command(Command.CommandTypes.REVERSE));
-                break;
-            case R.id.imageButtonStrafeLeft:
-                SendCommand(new Command(Command.CommandTypes.STRAFE_LEFT));
-                break;
-            case R.id.imageButtonStrafeRight:
-                SendCommand(new Command(Command.CommandTypes.STRAFE_RIGHT));
+            case R.id.downBtn:
+                botEngine.setHeading(BotEngine.Heading.DOWN);
+                message = "down";
                 break;
         }
     }
