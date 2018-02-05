@@ -21,7 +21,7 @@ namespace ScriptNs
             string stringToSend = "";
             if (posTgridF)
             {
-                stringToSend = @"{""robotPosition"" : [" + robotPosition[0] + ", " + robotPosition[1] + ", " + robotPosition[2] + "]}";
+                stringToSend = @"{""rPos"" : [" + robotPosition[0] + ", " + robotPosition[1] + ", " + robotPosition[2] + "]}";
             }
             else
             {
@@ -45,7 +45,7 @@ namespace ScriptNs
                         binaryString += gridLayout[w, h];
                         if (bitNumber % 8 == 0)
                         {
-                            part2 += Convert.ToInt32(binaryString, 2).ToString("x");
+                            part2 += Convert.ToInt32(binaryString, 2).ToString("X2");
                             binaryString = "";
                             bitNumber = 0;
                         }
@@ -55,10 +55,10 @@ namespace ScriptNs
                 {
                     for (var i = bitNumber; i < 8; i++)
                         binaryString += 0;
-                    part2 += Convert.ToInt32(binaryString, 2).ToString("x");
+                    part2 += Convert.ToInt32(binaryString, 2).ToString("X2");
                 }
 
-                stringToSend = "{\"gridPart1\":\"" + part1 + "\", \"gridPart2\":\"" + part2 + "\"}";
+                stringToSend = "{\"gridP1\":\"" + part1 + "\", \"gridP2\":\"" + part2 + "\"}";
             }
 
             return stringToSend + "\r\n";

@@ -75,7 +75,7 @@ public class CheckC567Fragment extends MainFragment implements View.OnClickListe
 
         switch (view.getId()){
             case R.id.updateButton:
-                BluetoothManager.SendCommand(new Command(Command.CommandTypes.SEND_INFO));
+                BluetoothManager.SendCommand(new Command(Command.CommandTypes.SEND_MAP));
                 //botEngine.draw();
                 break;
         }

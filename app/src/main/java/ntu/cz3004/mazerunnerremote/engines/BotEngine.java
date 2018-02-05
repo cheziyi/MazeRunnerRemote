@@ -56,7 +56,7 @@ public class BotEngine extends SurfaceView implements Runnable, View.OnLongClick
     private int botCanvasX;
     private int botCanvasY;
     private Point wayPoint;
-    private boolean[][] grid;
+    private int[][] grid;
 
     // The size in blocks of the runnable area
     private final int BOT_START_POSITION_X = 0;
@@ -189,7 +189,7 @@ public class BotEngine extends SurfaceView implements Runnable, View.OnLongClick
         });
         while (isRunning) {
             if(updateRequired()) {
-                if(isAutoUpdating) BluetoothManager.SendCommand(new Command(Command.CommandTypes.SEND_INFO));
+                if(isAutoUpdating) BluetoothManager.SendCommand(new Command(Command.CommandTypes.SEND_MAP));
                 draw();
             }
         }
@@ -228,7 +228,7 @@ public class BotEngine extends SurfaceView implements Runnable, View.OnLongClick
             }
         }
         if(resp.getGrid() != null){
-            grid = resp.getGrid();
+            grid = resp.getDisplayGrid();
         }
         //moveBot();
     }
@@ -256,7 +256,7 @@ public class BotEngine extends SurfaceView implements Runnable, View.OnLongClick
                     }
                     if(grid != null){
                         printLog(String.valueOf(grid.length));
-                        if(grid[y][x]){
+                        if(grid[y][x] == 1){
                             paint.setColor(Color.argb(255, 255, 255, 0));
                             canvas.drawRect((x * blockWidth) + tileBorderWidth, (y * blockHeight) + tileBorderWidth, (x * blockWidth) + blockWidth - tileBorderWidth, (y * blockHeight) + blockHeight - tileBorderWidth, paint);
                             paint.setColor(Color.argb(255, 0, 0, 255));

@@ -10,8 +10,9 @@ import org.apache.commons.lang3.Conversion;
  */
 
 public class Response {
-    private int[] robotPosition;
-    private String grid;
+    private int[] rPos;
+    private String gridP1;
+    private String gridP2;
     private String status;
 
     private static final int WIDTH = 15;
@@ -21,45 +22,94 @@ public class Response {
     }
 
     public RobotPosition getRobotPosition() {
-        if (robotPosition == null)
+        if (rPos == null)
             return null;
-        return new RobotPosition(robotPosition[0], robotPosition[1], robotPosition[2]);
+        return new RobotPosition(rPos[0], rPos[1], rPos[2]);
     }
 
     public void setRobotPosition(int[] robotPosition) {
-        this.robotPosition = robotPosition;
+        this.rPos = robotPosition;
     }
 
-    public boolean[][] getGrid() {
-        if (grid == null)
+    public int[][] getGrid() {
+        if (gridP1 == null || gridP2 == null)
             return null;
 
-        boolean[][] gridLayout = new boolean[HEIGHT][WIDTH];
+        int[][] gridLayout = new int[HEIGHT][WIDTH];
 
-        ArrayList<Boolean> bitList = new ArrayList<>();
+        ArrayList<Boolean> bitPart1 = new ArrayList<>();
+        ArrayList<Boolean> bitPart2 = new ArrayList<>();
 
-        for (int i = 0; i < grid.length(); i++) {
-            boolean[] bools = Conversion.hexDigitMsb0ToBinary(grid.charAt(i));
+        for (int i = 0; i < gridP1.length(); i++) {
+            boolean[] bools = Conversion.hexDigitMsb0ToBinary(gridP1.charAt(i));
             for (boolean bool : bools) {
-                bitList.add(bool);
+                bitPart1.add(bool);
+            }
+        }
+        // Remove 2 bit padding from start
+        bitPart1.remove(0);
+        bitPart1.remove(0);
+
+        for (int i = 0; i < gridP2.length(); i++) {
+            boolean[] bools = Conversion.hexDigitMsb0ToBinary(gridP2.charAt(i));
+            for (boolean bool : bools) {
+                bitPart2.add(bool);
             }
         }
 
         for (int h = 0; h < HEIGHT; h++) {
             for (int w = 0; w < WIDTH; w++) {
-                gridLayout[h][w] = bitList.get((h * WIDTH) + w);
+                if (bitPart1.get((h * WIDTH) + w))
+                    gridLayout[h][w] = 0;
+                else
+                    gridLayout[h][w] = -1;
             }
         }
+
+        int bitCount = 0;
+
+        for (int h = 0; h < HEIGHT; h++) {
+            for (int w = 0; w < WIDTH; w++) {
+                if (gridLayout[h][w] == -1)
+                    continue;
+                if (bitPart2.get(bitCount))
+                    gridLayout[h][w] = 1;
+                else
+                    gridLayout[h][w] = 0;
+                bitCount += 1;
+            }
+        }
+
         return gridLayout;
     }
 
-    public void setGrid(String grid) {
-        this.grid = grid;
+
+    public int[][] getDisplayGrid() {
+        if (getGrid() == null)
+            return null;
+
+        int[][] grid = getGrid();
+        int[][] dGrid = new int[grid.length][grid[0].length];
+
+        for (int h = 0; h < grid.length; h++) {
+            for (int w = 0; w < grid[h].length; w++) {
+                dGrid[(grid.length - 1) - h][w] = grid[h][w];
+            }
+        }
+        return dGrid;
     }
+
+
+    public void setGrid(String gridP1, String gridP2) {
+        this.gridP1 = gridP1;
+        this.gridP2 = gridP2;
+    }
+
 
     public String getStatus() {
         return status;
     }
+
 
     public void setStatus(String status) {
         this.status = status;
