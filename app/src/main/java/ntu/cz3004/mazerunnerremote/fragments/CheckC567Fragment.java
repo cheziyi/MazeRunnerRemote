@@ -76,7 +76,6 @@ public class CheckC567Fragment extends MainFragment implements View.OnClickListe
         switch (view.getId()){
             case R.id.updateButton:
                 BluetoothManager.SendCommand(new Command(Command.CommandTypes.SEND_MAP));
-                //botEngine.draw();
                 break;
         }
 
@@ -87,17 +86,15 @@ public class CheckC567Fragment extends MainFragment implements View.OnClickListe
         switch (compoundButton.getId()){
             case R.id.updateModeSwitch:
                 changeUpdateMode(isChecked);
+                BluetoothManager.SendCommand(new Command(isChecked ? Command.CommandTypes.AUTO_START : Command.CommandTypes.AUTO_STOP));
                 break;
         }
     }
 
-    private void changeUpdateMode(boolean isManualMode) {
-        updateButton.setEnabled(isManualMode);
-        updateModeTextVuew.setText(isManualMode ? "Update Mode (manual)" : "Update Mode (auto)");
-        botEngine.setAutoUpdating(!isManualMode);
+    private void changeUpdateMode(boolean isAutoMode) {
+        updateButton.setEnabled(!isAutoMode);
+        updateModeTextVuew.setText(isAutoMode ? "Update Mode (auto)" : "Update Mode (manual)");
+        botEngine.setAutoUpdating(isAutoMode);
     }
 
-    private void printLog(String message){
-        Log.v("debugBot", message);
-    }
 }

@@ -14,9 +14,12 @@ public class Command {
         commandString = typeToString(commandType);
     }
 
-    public void setLocation(int h, int w, int direction) {
+    public void setLocation(int h, int w) {
         this.h = h;
         this.w = w;
+    }
+
+    public void setDirection(int direction) {
         this.direction = direction;
     }
 

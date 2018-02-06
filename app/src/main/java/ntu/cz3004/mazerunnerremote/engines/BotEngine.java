@@ -34,10 +34,10 @@ public class BotEngine extends SurfaceView implements Runnable, View.OnLongClick
     // For tracking movement Heading
     public enum Heading {UP, RIGHT, DOWN, LEFT}
     // Start by heading to the right
-    private Heading heading = Heading.RIGHT;
+    private Heading heading = Heading.UP;
 
     private boolean isRunning;
-    private boolean isAutoUpdating = true;
+    private boolean isAutoUpdating = false;
     private boolean isEditMode = false;
 
     private int touchX;
@@ -182,14 +182,11 @@ public class BotEngine extends SurfaceView implements Runnable, View.OnLongClick
             public void onDataReceived(byte[] data, String message) {
                 printLog(message);
                 update(message);
-//                Response resp = new Gson().fromJson(message, Response.class);
-//                if (resp.getGrid() != null)
-//                    messageListAdapter.add("[GRID]: " + new Gson().toJson(resp.getGrid()));
             }
         });
         while (isRunning) {
             if(updateRequired()) {
-                if(isAutoUpdating) BluetoothManager.SendCommand(new Command(Command.CommandTypes.SEND_MAP));
+                //if(isAutoUpdating) BluetoothManager.SendCommand(new Command(Command.CommandTypes.SEND_MAP));
                 draw();
             }
         }
@@ -230,7 +227,21 @@ public class BotEngine extends SurfaceView implements Runnable, View.OnLongClick
         if(resp.getGrid() != null){
             grid = resp.getDisplayGrid();
         }
-        //moveBot();
+    }
+
+    private int directionToDegree(Heading heading){
+        switch (heading){
+            case UP:
+                return 0;
+            case RIGHT:
+                return 90;
+            case DOWN:
+                return 180;
+            case LEFT:
+                return 270;
+            default:
+                return 0;
+        }
     }
 
     public void draw() {
@@ -256,8 +267,15 @@ public class BotEngine extends SurfaceView implements Runnable, View.OnLongClick
                     }
                     if(grid != null){
                         printLog(String.valueOf(grid.length));
-                        if(grid[y][x] == 1){
+                        // obstacle
+                        if(grid[x][y] == 1){
                             paint.setColor(Color.argb(255, 255, 255, 0));
+                            canvas.drawRect((x * blockWidth) + tileBorderWidth, (y * blockHeight) + tileBorderWidth, (x * blockWidth) + blockWidth - tileBorderWidth, (y * blockHeight) + blockHeight - tileBorderWidth, paint);
+                            paint.setColor(Color.argb(255, 0, 0, 255));
+                        }
+                        //unknown
+                        else if(grid[x][y] == -1){
+                            paint.setColor(Color.argb(255, 255, 0, 255));
                             canvas.drawRect((x * blockWidth) + tileBorderWidth, (y * blockHeight) + tileBorderWidth, (x * blockWidth) + blockWidth - tileBorderWidth, (y * blockHeight) + blockHeight - tileBorderWidth, paint);
                             paint.setColor(Color.argb(255, 0, 0, 255));
                         }
@@ -352,10 +370,6 @@ public class BotEngine extends SurfaceView implements Runnable, View.OnLongClick
         thread.start();
     }
 
-    public void setHeading(Heading heading) {
-        this.heading = heading;
-    }
-
     public void setAutoUpdating(boolean autoUpdating) {
         isAutoUpdating = autoUpdating;
     }
@@ -423,6 +437,9 @@ public class BotEngine extends SurfaceView implements Runnable, View.OnLongClick
 
     public void setWaypoint() {
         this.wayPoint = new Point(touchX / blockWidth, touchY / blockHeight);
+        Command waypointCommand = new Command(Command.CommandTypes.PATH_WAYPOINT);
+        waypointCommand.setLocation(wayPoint.x, wayPoint.y);
+        BluetoothManager.SendCommand(waypointCommand);
     }
 
     @Override
@@ -451,6 +468,10 @@ public class BotEngine extends SurfaceView implements Runnable, View.OnLongClick
                 return true;
             case MotionEvent.ACTION_UP:
                 if(isEditMode){
+                    Command botLocCommand = new Command(Command.CommandTypes.ROBOT_LOCATION);
+                    botLocCommand.setLocation(botX, botY);
+                    botLocCommand.setDirection(directionToDegree(heading));
+                    BluetoothManager.SendCommand(botLocCommand);
                     bt.send("coordinate (" + botX + "," + botY + ")", false);
                     isEditMode = false;
                 }
