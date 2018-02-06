@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:textSize="18sp"
             android:textColor="@color/lightBlack"
-            android:text="Update Mode (Auto)"/>
+            android:text="Update Mode (Manual)"/>
 
         <Switch
             android:id="@+id/updateModeSwitch"
@@ -38,7 +38,7 @@
             android:layout_height="wrap_content"
             android:background="@drawable/button_primary"
             android:text="update"
-            android:enabled="false"
+            android:enabled="true"
             style="@style/PrimaryButton" />
 
     </LinearLayout>
