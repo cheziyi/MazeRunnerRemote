@@ -32,6 +32,10 @@
                         android:id="@+id/nav_check_c567"
                         android:icon="@drawable/ic_menu_c567"
                         android:title="C5, C6, C7" />
+                    <item
+                        android:id="@+id/nav_check_c8"
+                        android:icon="@drawable/ic_menu_c8"
+                        android:title="C8" />
                 </group>
             </menu>
         </item>

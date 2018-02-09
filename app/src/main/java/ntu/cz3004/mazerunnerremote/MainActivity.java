@@ -26,6 +26,7 @@ import app.akexorcist.bluetotohspp.library.BluetoothState;
 import ntu.cz3004.mazerunnerremote.fragments.CheckC1Fragment;
 import ntu.cz3004.mazerunnerremote.fragments.CheckC3Fragment;
 import ntu.cz3004.mazerunnerremote.fragments.CheckC567Fragment;
+import ntu.cz3004.mazerunnerremote.fragments.CheckC8Fragment;
 import ntu.cz3004.mazerunnerremote.fragments.ManualFragment;
 import ntu.cz3004.mazerunnerremote.fragments.OnFragmentViewCreatedListener;
 import ntu.cz3004.mazerunnerremote.fragments.TraverseFragment;
@@ -166,6 +167,10 @@ public class MainActivity extends AppCompatActivity
             case R.id.nav_check_c567:
                 replaceFragment(new CheckC567Fragment(), "c5, c6, c7");
                 break;
+            case R.id.nav_check_c8:
+                replaceFragment(new CheckC8Fragment(), "c8");
+                break;
+
         }
         drawer.closeDrawer(GravityCompat.START);
         return true;
