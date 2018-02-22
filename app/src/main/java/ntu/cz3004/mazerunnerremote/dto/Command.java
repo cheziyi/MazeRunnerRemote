@@ -1,5 +1,7 @@
 package ntu.cz3004.mazerunnerremote.dto;
 
+import org.json.JSONObject;
+
 /**
  * Created by calvin on 31/1/2018.
  */
@@ -24,13 +26,26 @@ public class Command {
     }
 
     public String getCommandString() {
-        String resCommand = commandString;
-        if (commandString == typeToString(CommandTypes.PATH_WAYPOINT)) {
-            resCommand = resCommand + "," + h + "," + w;
-        } else if (commandString == typeToString(CommandTypes.ROBOT_LOCATION)) {
-            resCommand = resCommand + "," + h + "," + w + "," + direction;
+        JSONObject obj = new JSONObject();
+        try {
+            obj.put("command", commandString);
+        } catch (Exception e) {
         }
-        return resCommand;
+        if (commandString == typeToString(CommandTypes.PATH_WAYPOINT)) {
+            try {
+                obj.put("h", h);
+                obj.put("w", w);
+            } catch (Exception e) {
+            }
+        } else if (commandString == typeToString(CommandTypes.ROBOT_LOCATION)) {
+            try {
+                obj.put("h", h);
+                obj.put("w", w);
+                obj.put("d", direction);
+            } catch (Exception e) {
+            }
+        }
+        return obj.toString();
     }
 
     private String typeToString(CommandTypes commandType) {
