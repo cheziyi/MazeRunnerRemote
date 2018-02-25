@@ -33,15 +33,12 @@ public class Command {
         }
         if (commandString == typeToString(CommandTypes.PATH_WAYPOINT)) {
             try {
-                obj.put("h", h);
-                obj.put("w", w);
+                obj.put("wayPoint", new int[]{h, w});
             } catch (Exception e) {
             }
         } else if (commandString == typeToString(CommandTypes.ROBOT_LOCATION)) {
             try {
-                obj.put("h", h);
-                obj.put("w", w);
-                obj.put("d", direction);
+                obj.put("robotPos", new int[]{h, w, direction});
             } catch (Exception e) {
             }
         }

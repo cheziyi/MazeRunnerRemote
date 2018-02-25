@@ -10,7 +10,7 @@ import org.apache.commons.lang3.Conversion;
  */
 
 public class Response {
-    private int[] rPos;
+    private int[] robotPos;
     private String gridP1;
     private String gridP2;
     private String status;
@@ -22,13 +22,13 @@ public class Response {
     }
 
     public RobotPosition getRobotPosition() {
-        if (rPos == null)
+        if (robotPos == null)
             return null;
-        return new RobotPosition(rPos[0], rPos[1], rPos[2]);
+        return new RobotPosition(robotPos[0], robotPos[1], robotPos[2]);
     }
 
     public void setRobotPosition(int[] robotPosition) {
-        this.rPos = robotPosition;
+        this.robotPos = robotPosition;
     }
 
     public int[][] getGrid() {
