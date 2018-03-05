@@ -14,6 +14,7 @@ public class Response {
     private String gridP1;
     private String gridP2;
     private String status;
+    private String event;
 
     private static final int WIDTH = 15;
     private static final int HEIGHT = 20;
@@ -120,6 +121,14 @@ public class Response {
         this.status = status;
     }
 
+    public String getEvent() {
+        return event;
+        //endExplore. endFastest
+    }
+
+    public void setEvent(String event) {
+        this.event = event;
+    }
 
     public class RobotPosition {
         private int x;

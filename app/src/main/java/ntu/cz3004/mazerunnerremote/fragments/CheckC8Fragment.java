@@ -134,5 +134,5 @@ public class CheckC8Fragment extends MainFragment implements View.OnClickListene
                 })
                 .show();
     }
-    
+
 }

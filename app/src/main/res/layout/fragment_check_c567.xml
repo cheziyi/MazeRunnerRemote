@@ -8,54 +8,108 @@
     android:background="@color/lightGrey">
 
     <LinearLayout
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        android:gravity="center"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:color/white"
-        android:orientation="horizontal">
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/updateModeTextVuew"
-            android:padding="@dimen/full_margin"
-            android:layout_width="0dp"
-            android:layout_weight="1"
+        <LinearLayout
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:gravity="center"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="18sp"
-            android:textColor="@color/lightBlack"
-            android:text="Update Mode (Manual)"/>
+            android:background="@android:color/white"
+            android:orientation="horizontal">
 
-        <Switch
-            android:id="@+id/updateModeSwitch"
-            android:padding="@dimen/full_margin"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            <TextView
+                android:id="@+id/updateModeTextVuew"
+                android:padding="@dimen/full_margin"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:textColor="@color/lightBlack"
+                android:text="Update Mode (Manual)"/>
 
-        <Button
-            android:id="@+id/updateButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/button_primary"
-            android:text="update"
-            android:enabled="true"
-            style="@style/PrimaryButton" />
+            <Switch
+                android:id="@+id/updateModeSwitch"
+                android:padding="@dimen/full_margin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <Button
+                android:id="@+id/updateButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/button_primary"
+                android:text="update"
+                android:enabled="true"
+                style="@style/PrimaryButton" />
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+            <ntu.cz3004.mazerunnerremote.engines.BotEngine
+                android:id="@+id/botEngine"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+            <FrameLayout
+                android:id="@+id/bugfixview"
+                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:background="@android:color/transparent"/>
+        </RelativeLayout>
 
     </LinearLayout>
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
-        <ntu.cz3004.mazerunnerremote.engines.BotEngine
-            android:id="@+id/botEngine"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-        <FrameLayout
-            android:id="@+id/bugfixview"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnExplore"
+            style="@style/PrimaryButton"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_width="match_parent"
-            android:background="@android:color/transparent"/>
-    </RelativeLayout>
+            android:layout_weight="1"
+            android:background="@drawable/button_primary"
+            android:text="Explore" />
+
+        <Button
+            android:id="@+id/btnRace"
+            style="@style/PrimaryButton"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/button_primary"
+            android:text="Race" />
+
+        <ImageButton
+            android:id="@+id/btnRotateACW"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:background="@drawable/button_primary"
+            android:src="@drawable/ic_rotate_acw"
+            android:tint="@android:color/white" />
+
+        <ImageButton
+            android:id="@+id/btnRotateCW"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:background="@drawable/button_primary"
+            android:src="@drawable/ic_rotate_cw"
+            android:tint="@android:color/white"/>
+
+
+    </LinearLayout>
+
+
 
 </LinearLayout>
