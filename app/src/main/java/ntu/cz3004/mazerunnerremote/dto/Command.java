@@ -43,14 +43,14 @@ public class Command {
             obj.put("command", commandString);
         } catch (Exception e) {
         }
-        if (commandString == typeToString(CommandTypes.PATH_WAYPOINT)) {
+        if (commandString == typeToString(CommandTypes.BEGIN_FASTEST_PATH)) {
             try {
-                obj.put("data", new JSONArray(new int[]{19 - h, w}));
+                obj.put("wayPoint", new JSONArray(new int[]{19 - h, w}));
             } catch (Exception e) {
             }
-        } else if (commandString == typeToString(CommandTypes.ROBOT_LOCATION)) {
+        } else if (commandString == typeToString(CommandTypes.BEGIN_EXPLORE)) {
             try {
-                obj.put("data", new JSONArray(new int[]{18 - h, w + 1, direction}));
+                obj.put("robotPos", new JSONArray(new int[]{18 - h, w + 1, direction}));
             } catch (Exception e) {
             }
         }
@@ -81,10 +81,10 @@ public class Command {
                 return "autoStart";
             case AUTO_STOP:
                 return "autoStop";
-            case PATH_WAYPOINT:
-                return "wayPoint";
-            case ROBOT_LOCATION:
-                return "robotPos";
+//            case PATH_WAYPOINT:
+//                return "wayPoint";
+//            case ROBOT_LOCATION:
+//                return "robotPos";
             default:
                 return "";
         }
@@ -96,6 +96,7 @@ public class Command {
         BEGIN_EXPLORE, BEGIN_FASTEST_PATH, SEND_MAP,
 
         // Everything below are not supported by AMT
-        AUTO_START, AUTO_STOP, PATH_WAYPOINT, ROBOT_LOCATION
+        AUTO_START, AUTO_STOP
+        //, PATH_WAYPOINT, ROBOT_LOCATION
     }
 }
