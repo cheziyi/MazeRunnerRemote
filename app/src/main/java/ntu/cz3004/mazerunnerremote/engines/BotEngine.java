@@ -42,6 +42,7 @@ public class BotEngine extends SurfaceView implements Runnable, View.OnLongClick
     private boolean isRunning;
     private boolean isAutoUpdating = false;
     private boolean isEditMode = false;
+    private boolean allowInteration = true;
 
     private int touchX;
     private int touchY;
@@ -209,6 +210,7 @@ public class BotEngine extends SurfaceView implements Runnable, View.OnLongClick
     private void update(String messageReceived) {
         Response resp = new Gson().fromJson(messageReceived, Response.class);
         Response.RobotPosition robotPosition = resp.getRobotPosition();
+        String event = resp.getEvent();
         if (robotPosition != null) {
             botX = robotPosition.getX();
             botY = robotPosition.getY();
@@ -217,24 +219,31 @@ public class BotEngine extends SurfaceView implements Runnable, View.OnLongClick
         if (resp.getGrid() != null) {
             grid = resp.getDisplayGrid();
         }
+        if(event != null) {
+            if(event.equals("endExplore") || event.equals("endFastest")) {
+                allowInteration = true;
+            }
+        }
     }
 
     public void rotateBot(boolean isClockWise) {
-        int currentBotOrientation = directionToDegree(heading);
-        if(isClockWise) {
-            currentBotOrientation += 90;
-            if(currentBotOrientation > 270) {
-                currentBotOrientation = 0;
-            }
+        if(allowInteration) {
+            int currentBotOrientation = directionToDegree(heading);
+            if(isClockWise) {
+                currentBotOrientation += 90;
+                if(currentBotOrientation > 270) {
+                    currentBotOrientation = 0;
+                }
 
-        }
-        else {
-            currentBotOrientation -= 90;
-            if(currentBotOrientation < 0) {
-                currentBotOrientation = 270;
             }
+            else {
+                currentBotOrientation -= 90;
+                if(currentBotOrientation < 0) {
+                    currentBotOrientation = 270;
+                }
+            }
+            heading = degreeToDirection(currentBotOrientation);
         }
-        heading = degreeToDirection(currentBotOrientation);
     }
 
     private int directionToDegree(Heading heading) {
@@ -467,11 +476,13 @@ public class BotEngine extends SurfaceView implements Runnable, View.OnLongClick
 
     @Override
     public boolean onLongClick(View view) {
-        if (touchBot()) {
-            isEditMode = true;
-            return true;
+        if(allowInteration) {
+            if (touchBot()) {
+                isEditMode = true;
+                return true;
+            }
+            setWaypoint();
         }
-        setWaypoint();
         return false;
     }
 
@@ -491,10 +502,10 @@ public class BotEngine extends SurfaceView implements Runnable, View.OnLongClick
                 return true;
             case MotionEvent.ACTION_UP:
                 if (isEditMode) {
-                    Command botLocCommand = new Command(Command.CommandTypes.ROBOT_LOCATION);
-                    botLocCommand.setLocation(botX, botY);
-                    botLocCommand.setDirection(directionToDegree(heading));
-                    BluetoothManager.SendCommand(botLocCommand);
+//                    Command botLocCommand = new Command(Command.CommandTypes.ROBOT_LOCATION);
+//                    botLocCommand.setLocation(botX, botY);
+//                    botLocCommand.setDirection(directionToDegree(heading));
+//                    BluetoothManager.SendCommand(botLocCommand);
                     isEditMode = false;
                 }
                 return false;
@@ -502,4 +513,19 @@ public class BotEngine extends SurfaceView implements Runnable, View.OnLongClick
         return false;
     }
 
+    public int getBotX() {
+        return botX;
+    }
+
+    public int getBotY() {
+        return botY;
+    }
+
+    public int getHeadingInDegree() {
+        return directionToDegree(heading);
+    }
+
+    public void setAllowInteration(boolean allowInteration) {
+        this.allowInteration = allowInteration;
+    }
 }

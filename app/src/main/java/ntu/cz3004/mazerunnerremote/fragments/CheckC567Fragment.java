@@ -1,6 +1,7 @@
 package ntu.cz3004.mazerunnerremote.fragments;
 
 import android.content.Context;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -14,6 +15,7 @@ import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import ntu.cz3004.mazerunnerremote.R;
 import ntu.cz3004.mazerunnerremote.dto.Command;
@@ -94,9 +96,25 @@ public class CheckC567Fragment extends MainFragment implements View.OnClickListe
                 BluetoothManager.SendCommand(new Command(Command.CommandTypes.SEND_MAP));
                 break;
             case R.id.btnExplore:
+                Command exploreCommand = new Command(Command.CommandTypes.BEGIN_EXPLORE);
+                exploreCommand.setLocation(botEngine.getBotX(), botEngine.getBotY());
+                exploreCommand.setDirection(botEngine.getHeadingInDegree());
+                BluetoothManager.SendCommand(exploreCommand);
+                setInteraction(false);
+                updateModeSwitch.setChecked(true);
                 break;
             case R.id.btnRace:
-                botEngine.getWayPoint();
+                Command raceCommand = new Command(Command.CommandTypes.BEGIN_FASTEST_PATH);
+                Point wayPoint = botEngine.getWayPoint();
+                if(wayPoint != null) {
+                    raceCommand.setLocation(wayPoint.x, wayPoint.y);
+                    BluetoothManager.SendCommand(raceCommand);
+                    setInteraction(false);
+                    updateModeSwitch.setChecked(true);
+                }
+                else {
+                    Toast.makeText(getActivity(), "Please set waypoint", Toast.LENGTH_SHORT).show();
+                }
                 break;
             case R.id.btnRotateACW:
                 botEngine.rotateBot(false);
@@ -122,6 +140,14 @@ public class CheckC567Fragment extends MainFragment implements View.OnClickListe
         updateButton.setEnabled(!isAutoMode);
         updateModeTextVuew.setText(isAutoMode ? "Update Mode (auto)" : "Update Mode (manual)");
         botEngine.setAutoUpdating(isAutoMode);
+    }
+
+    public void setInteraction(boolean isEnable) {
+        botEngine.setAllowInteration(isEnable);
+        btnRace.setEnabled(isEnable);
+        btnExplore.setEnabled(isEnable);
+        btnRotateACW.setEnabled(isEnable);
+        btnRotateCW.setEnabled(isEnable);
     }
 
 }
