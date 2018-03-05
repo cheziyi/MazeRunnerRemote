@@ -2,65 +2,121 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="center">
 
-    <GridLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_gravity="center">
-
-        <Button
-            android:id="@+id/btnViewPersistent1"
-            android:layout_width="wrap_content"
+        <TextView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Display String 1" />
+            android:text="String 1"
+            android:textColor="@android:color/black"
+            android:textAlignment="center"
+            android:textSize="24sp"
+            android:textStyle="bold" />
 
-        <Button
-            android:id="@+id/btnViewPersistent2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="80dp"
-            android:layout_marginRight="20dp"
-            android:text="Display String 2" />
-
-        <EditText
+        <TextView
             android:id="@+id/textString1"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_column="0"
-            android:layout_weight="1"
             android:ems="10"
-            android:layout_row="1"
-            />
+            android:padding="10dp"
+            android:textAlignment="center"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            tools:text="example text 1" />
 
-        <Button
-            android:id="@+id/btnPersistent1"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:onClick="onClick"
-            android:layout_marginBottom="20dp"
-            android:text="Update String 1" />
+            android:orientation="horizontal">
 
-        <EditText
+            <Button
+                android:id="@+id/btnViewPersistent1"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="Send String 1"
+                android:background="@drawable/button_primary"
+                style="@style/PrimaryButton"/>
+
+            <Button
+                android:id="@+id/btnPersistent1"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="Edit String 1"
+                android:background="@drawable/button_primary"
+                style="@style/PrimaryButton"/>
+
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="String 2"
+            android:textColor="@android:color/black"
+            android:textAlignment="center"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <TextView
             android:id="@+id/textString2"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_column="0"
-            android:layout_row="2"
-            android:layout_weight="1"
             android:ems="10"
-            />
+            android:padding="10dp"
+            android:textAlignment="center"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            tools:text="example text 2" />
 
-        <Button
-            android:id="@+id/btnPersistent2"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_row="2"
-            android:text="Update String 2" />
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnViewPersistent2"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="Send String 2"
+                android:background="@drawable/button_primary"
+                style="@style/PrimaryButton"/>
+
+            <Button
+                android:id="@+id/btnPersistent2"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="Edit String 2"
+                android:background="@drawable/button_primary"
+                style="@style/PrimaryButton"/>
+
+        </LinearLayout>
+
+
+    </LinearLayout>
 
 
 
-    </GridLayout>
+
 </LinearLayout>
