@@ -71,6 +71,8 @@ public class MainActivity extends AppCompatActivity
 
         bt.setBluetoothConnectionListener(new BluetoothSPP.BluetoothConnectionListener() {
             public void onDeviceConnected(String name, String address) {
+                BluetoothManager.ManualDc = false;
+                BluetoothManager.LastConnectedDevice = address;
                 Toast.makeText(getApplicationContext()
                         , "Connected to " + name + "\n" + address
                         , Toast.LENGTH_SHORT).show();
@@ -79,6 +81,9 @@ public class MainActivity extends AppCompatActivity
             public void onDeviceDisconnected() {
                 Toast.makeText(getApplicationContext()
                         , "Connection lost", Toast.LENGTH_SHORT).show();
+                if (!BluetoothManager.ManualDc) {
+                    bt.connect(BluetoothManager.LastConnectedDevice);
+                }
             }
 
             public void onDeviceConnectionFailed() {
@@ -158,7 +163,7 @@ public class MainActivity extends AppCompatActivity
                 if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                     startBlutoothIntent();
                 } else {
-                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},ACCESS_LOCATION_REQUEST_CODE);
+                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, ACCESS_LOCATION_REQUEST_CODE);
                 }
                 break;
             case R.id.nav_check_c3:
@@ -176,7 +181,7 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    private void startBlutoothIntent(){
+    private void startBlutoothIntent() {
         Intent intent = new Intent(this, ConnectBluetoothActivity.class);
         startActivityForResult(intent, BluetoothState.REQUEST_CONNECT_DEVICE);
     }

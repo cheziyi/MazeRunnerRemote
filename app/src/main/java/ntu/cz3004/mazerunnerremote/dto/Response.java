@@ -22,9 +22,10 @@ public class Response {
     }
 
     public RobotPosition getRobotPosition() {
-        if (robotPos == null)
+        if (robotPos == null) {
             return null;
-        return new RobotPosition(robotPos[0], robotPos[1], robotPos[2]);
+        }
+        return new RobotPosition(robotPos[1] - 1, 18 - robotPos[0], robotPos[2]);
     }
 
     public void setRobotPosition(int[] robotPosition) {
@@ -32,8 +33,9 @@ public class Response {
     }
 
     public int[][] getGrid() {
-        if (gridP1 == null || gridP2 == null)
+        if (gridP1 == null || gridP2 == null) {
             return null;
+        }
 
         int[][] gridLayout = new int[HEIGHT][WIDTH];
 
@@ -59,10 +61,11 @@ public class Response {
 
         for (int h = 0; h < HEIGHT; h++) {
             for (int w = 0; w < WIDTH; w++) {
-                if (bitPart1.get((h * WIDTH) + w))
+                if (bitPart1.get((h * WIDTH) + w)) {
                     gridLayout[h][w] = 0;
-                else
+                } else {
                     gridLayout[h][w] = -1;
+                }
             }
         }
 
@@ -70,12 +73,14 @@ public class Response {
 
         for (int h = 0; h < HEIGHT; h++) {
             for (int w = 0; w < WIDTH; w++) {
-                if (gridLayout[h][w] == -1)
+                if (gridLayout[h][w] == -1) {
                     continue;
-                if (bitPart2.get(bitCount))
+                }
+                if (bitPart2.get(bitCount)) {
                     gridLayout[h][w] = 1;
-                else
+                } else {
                     gridLayout[h][w] = 0;
+                }
                 bitCount += 1;
             }
         }
@@ -89,11 +94,11 @@ public class Response {
             return null;
 
         int[][] grid = getGrid();
-        int[][] dGrid = new int[grid.length][grid[0].length];
+        int[][] dGrid = new int[grid[0].length][grid.length];
 
         for (int h = 0; h < grid.length; h++) {
-            for (int w = 0; w < grid[h].length; w++) {
-                dGrid[(grid.length - 1) - h][w] = grid[h][w];
+            for (int w = 0; w < grid[0].length; w++) {
+                dGrid[w][19 - h] = grid[h][w];
             }
         }
         return dGrid;

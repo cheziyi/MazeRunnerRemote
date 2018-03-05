@@ -32,7 +32,10 @@ public class BotEngine extends SurfaceView implements Runnable, View.OnLongClick
     private Thread thread = null;
 
     // For tracking movement Heading
-    public enum Heading {UP, RIGHT, DOWN, LEFT}
+    public enum Heading {
+        UP, RIGHT, DOWN, LEFT
+    }
+
     // Start by heading to the right
     private Heading heading = Heading.UP;
 
@@ -141,8 +144,8 @@ public class BotEngine extends SurfaceView implements Runnable, View.OnLongClick
         setOnTouchListener(this);
     }
 
-    private void moveBot(){
-        if(checkCollide(heading)){
+    private void moveBot() {
+        if (checkCollide(heading)) {
             return;
         }
         // Move the bot
@@ -162,7 +165,7 @@ public class BotEngine extends SurfaceView implements Runnable, View.OnLongClick
         }
     }
 
-    private boolean checkCollide(Heading heading){
+    private boolean checkCollide(Heading heading) {
         switch (heading) {
             case UP:
                 return (botY == 0);
@@ -185,7 +188,7 @@ public class BotEngine extends SurfaceView implements Runnable, View.OnLongClick
             }
         });
         while (isRunning) {
-            if(updateRequired()) {
+            if (updateRequired()) {
                 //if(isAutoUpdating) BluetoothManager.SendCommand(new Command(Command.CommandTypes.SEND_MAP));
                 draw();
             }
@@ -194,7 +197,7 @@ public class BotEngine extends SurfaceView implements Runnable, View.OnLongClick
 
     private boolean updateRequired() {
         // Are we due to update the frame
-        if(nextFrameTime <= System.currentTimeMillis()){
+        if (nextFrameTime <= System.currentTimeMillis()) {
             // Setup when the next update will be triggered
             nextFrameTime = System.currentTimeMillis() + MILLIS_PER_SECOND / FPS;
             // Return true so that the update and draw functions are executed
@@ -206,10 +209,10 @@ public class BotEngine extends SurfaceView implements Runnable, View.OnLongClick
     private void update(String messageReceived) {
         Response resp = new Gson().fromJson(messageReceived, Response.class);
         Response.RobotPosition robotPosition = resp.getRobotPosition();
-        if(robotPosition != null){
+        if (robotPosition != null) {
             botX = robotPosition.getX();
             botY = robotPosition.getY();
-            switch (robotPosition.getDirection()){
+            switch (robotPosition.getDirection()) {
                 case 0:
                     heading = Heading.UP;
                     break;
@@ -224,13 +227,13 @@ public class BotEngine extends SurfaceView implements Runnable, View.OnLongClick
                     break;
             }
         }
-        if(resp.getGrid() != null){
+        if (resp.getGrid() != null) {
             grid = resp.getDisplayGrid();
         }
     }
 
-    private int directionToDegree(Heading heading){
-        switch (heading){
+    private int directionToDegree(Heading heading) {
+        switch (heading) {
             case UP:
                 return 0;
             case RIGHT:
@@ -255,26 +258,25 @@ public class BotEngine extends SurfaceView implements Runnable, View.OnLongClick
             // Draw tile
             paint.setColor(Color.argb(255, 0, 0, 255));
             int tileBorderWidth = (int) (TILE_BORDER_RATION * blockWidth);
-            for(int x = 0; x < NUM_BLOCKS_WIDTH; x++){
-                for(int y = 0; y < NUM_BLOCKS_HEIGHT; y++){
-                    if(wayPoint != null && wayPoint.x == x && wayPoint.y == y){
+            for (int x = 0; x < NUM_BLOCKS_WIDTH; x++) {
+                for (int y = 0; y < NUM_BLOCKS_HEIGHT; y++) {
+                    if (wayPoint != null && wayPoint.x == x && wayPoint.y == y) {
                         paint.setColor(Color.argb(255, 0, 255, 0));
                         canvas.drawRect((x * blockWidth) + tileBorderWidth, (y * blockHeight) + tileBorderWidth, (x * blockWidth) + blockWidth - tileBorderWidth, (y * blockHeight) + blockHeight - tileBorderWidth, paint);
                         paint.setColor(Color.argb(255, 0, 0, 255));
-                    }
-                    else {
+                    } else {
                         canvas.drawRect((x * blockWidth) + tileBorderWidth, (y * blockHeight) + tileBorderWidth, (x * blockWidth) + blockWidth - tileBorderWidth, (y * blockHeight) + blockHeight - tileBorderWidth, paint);
                     }
-                    if(grid != null){
+                    if (grid != null) {
                         printLog(String.valueOf(grid.length));
                         // obstacle
-                        if(grid[x][y] == 1){
+                        if (grid[x][y] == 1) {
                             paint.setColor(Color.argb(255, 255, 255, 0));
                             canvas.drawRect((x * blockWidth) + tileBorderWidth, (y * blockHeight) + tileBorderWidth, (x * blockWidth) + blockWidth - tileBorderWidth, (y * blockHeight) + blockHeight - tileBorderWidth, paint);
                             paint.setColor(Color.argb(255, 0, 0, 255));
                         }
                         //unknown
-                        else if(grid[x][y] == -1){
+                        else if (grid[x][y] == -1) {
                             paint.setColor(Color.argb(255, 255, 0, 255));
                             canvas.drawRect((x * blockWidth) + tileBorderWidth, (y * blockHeight) + tileBorderWidth, (x * blockWidth) + blockWidth - tileBorderWidth, (y * blockHeight) + blockHeight - tileBorderWidth, paint);
                             paint.setColor(Color.argb(255, 0, 0, 255));
@@ -284,10 +286,9 @@ public class BotEngine extends SurfaceView implements Runnable, View.OnLongClick
             }
 
             // Set the color of the paint to draw the bot
-            if(isEditMode){
+            if (isEditMode) {
                 paint.setColor(Color.argb(255, 255, 0, 0));
-            }
-            else{
+            } else {
                 paint.setColor(Color.argb(255, 255, 255, 255));
             }
 
@@ -295,7 +296,6 @@ public class BotEngine extends SurfaceView implements Runnable, View.OnLongClick
             //draw bot
             canvas.drawRect((botX * blockWidth), (botY * blockHeight), ((botX * blockWidth) + (blockWidth * BOT_SIZE)), ((botY * blockHeight) + (blockHeight * BOT_SIZE)), paint);
             drawArrow();
-
 
 
             //canvas.drawRect(0, 0, 200, 200, paint);
@@ -311,7 +311,7 @@ public class BotEngine extends SurfaceView implements Runnable, View.OnLongClick
         Point arrowBaseRight = new Point();
         Point arrowBaseLeft = new Point();
 
-        switch (heading){
+        switch (heading) {
             case UP:
                 arrowHead.set((botX * blockWidth) + (getBotWidth() / 2), (botY * blockHeight));
                 arrowBaseRight.set((botX * blockWidth) + getBotWidth(), (botY * blockHeight) + getBotHeight());
@@ -342,10 +342,10 @@ public class BotEngine extends SurfaceView implements Runnable, View.OnLongClick
 
         Path path = new Path();
         path.setFillType(Path.FillType.EVEN_ODD);
-        path.moveTo(arrowHead.x,arrowHead.y);
-        path.lineTo(arrowBaseRight.x,arrowBaseRight.y);
-        path.lineTo(arrowBaseLeft.x,arrowBaseLeft.y);
-        path.lineTo(arrowHead.x,arrowHead.y);
+        path.moveTo(arrowHead.x, arrowHead.y);
+        path.lineTo(arrowBaseRight.x, arrowBaseRight.y);
+        path.lineTo(arrowBaseLeft.x, arrowBaseLeft.y);
+        path.lineTo(arrowHead.x, arrowHead.y);
         path.close();
 
         canvas.drawPath(path, paint);
@@ -382,24 +382,23 @@ public class BotEngine extends SurfaceView implements Runnable, View.OnLongClick
         this.touchY = touchY;
     }
 
-    private void printLog(String message){
+    private void printLog(String message) {
         Log.v("debugBot", message);
     }
 
     public void setBotPosition(int[] touchCoor) {
-        if(isEditMode){
+        if (isEditMode) {
             int[] newBotCoor = getNewBotPosition(touchCoor);
-            if(!isBotOutOfArena(newBotCoor[0], newBotCoor[1])){
+            if (!isBotOutOfArena(newBotCoor[0], newBotCoor[1])) {
                 botX = newBotCoor[0];
                 botY = newBotCoor[1];
-            }
-            else if(isBotOnBorder()){
+            } else if (isBotOnBorder()) {
                 setBotCanvas(touchCoor);
             }
         }
     }
 
-    public int[] getNewBotPosition(int[] touchCoor){
+    public int[] getNewBotPosition(int[] touchCoor) {
         int[] nomalisedTouch = nomaliseTouch(touchCoor);
         int[] newBotCoor = new int[2];
         newBotCoor[0] = nomalisedTouch[0] / blockWidth;
@@ -411,7 +410,7 @@ public class BotEngine extends SurfaceView implements Runnable, View.OnLongClick
         return (x < 0) || (y < 0) || (x > NUM_BLOCKS_WIDTH - BOT_SIZE) || (y > NUM_BLOCKS_HEIGHT - BOT_SIZE);
     }
 
-    public boolean isBotOnBorder(){
+    public boolean isBotOnBorder() {
         return (botX == 0) || (botY == 0) || (botX == NUM_BLOCKS_WIDTH - BOT_SIZE) || (botY == NUM_BLOCKS_HEIGHT - BOT_SIZE);
     }
 
@@ -422,16 +421,16 @@ public class BotEngine extends SurfaceView implements Runnable, View.OnLongClick
         return nomalisedTouch;
     }
 
-    public void setBotCanvas(int[] touchCoor){
+    public void setBotCanvas(int[] touchCoor) {
         botCanvasX = touchCoor[0] - (botX * blockWidth);
         botCanvasY = touchCoor[1] - (botY * blockHeight);
     }
 
-    private int getBotWidth(){
+    private int getBotWidth() {
         return blockWidth * BOT_SIZE;
     }
 
-    private int getBotHeight(){
+    private int getBotHeight() {
         return blockHeight * BOT_SIZE;
     }
 
@@ -444,7 +443,7 @@ public class BotEngine extends SurfaceView implements Runnable, View.OnLongClick
 
     @Override
     public boolean onLongClick(View view) {
-        if(touchBot()){
+        if (touchBot()) {
             isEditMode = true;
             return true;
         }
@@ -459,7 +458,7 @@ public class BotEngine extends SurfaceView implements Runnable, View.OnLongClick
         touchCoor[1] = (int) motionEvent.getY();
         setTouchX((int) motionEvent.getX()); //getX() return coordinate RELATIVE to the view dispatched it
         setTouchY((int) motionEvent.getY());
-        switch (motionEvent.getAction()){
+        switch (motionEvent.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 setBotCanvas(touchCoor);
                 return false; //return false so that onLongClick get triggered
@@ -467,12 +466,11 @@ public class BotEngine extends SurfaceView implements Runnable, View.OnLongClick
                 setBotPosition(touchCoor);
                 return true;
             case MotionEvent.ACTION_UP:
-                if(isEditMode){
+                if (isEditMode) {
                     Command botLocCommand = new Command(Command.CommandTypes.ROBOT_LOCATION);
                     botLocCommand.setLocation(botX, botY);
                     botLocCommand.setDirection(directionToDegree(heading));
                     BluetoothManager.SendCommand(botLocCommand);
-                    bt.send("coordinate (" + botX + "," + botY + ")", false);
                     isEditMode = false;
                 }
                 return false;

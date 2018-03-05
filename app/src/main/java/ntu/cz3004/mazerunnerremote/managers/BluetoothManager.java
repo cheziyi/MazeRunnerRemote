@@ -23,6 +23,9 @@ public class BluetoothManager {
 
     public static BluetoothSPP bt;
 
+    public static Boolean ManualDc = false;
+    public static String LastConnectedDevice = "";
+
     public static BluetoothAdapter getDefaultBtAdapter() {
         return BluetoothAdapter.getDefaultAdapter();
     }

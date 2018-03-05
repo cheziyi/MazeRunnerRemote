@@ -1,6 +1,7 @@
 package ntu.cz3004.mazerunnerremote.dto;
 
 import org.json.JSONObject;
+import org.json.JSONArray;
 
 /**
  * Created by calvin on 31/1/2018.
@@ -16,7 +17,7 @@ public class Command {
         commandString = typeToString(commandType);
     }
 
-    public void setLocation(int h, int w) {
+    public void setLocation(int w, int h) {
         this.h = h;
         this.w = w;
     }
@@ -26,6 +27,17 @@ public class Command {
     }
 
     public String getCommandString() {
+
+        if (commandString == typeToString(CommandTypes.FORWARD) ||
+                commandString == typeToString(CommandTypes.REVERSE) ||
+                commandString == typeToString(CommandTypes.ROTATE_LEFT) ||
+                commandString == typeToString(CommandTypes.ROTATE_RIGHT) ||
+                commandString == typeToString(CommandTypes.STRAFE_LEFT) ||
+                commandString == typeToString(CommandTypes.STRAFE_RIGHT)
+                ) {
+            return commandString;
+        }
+
         JSONObject obj = new JSONObject();
         try {
             obj.put("command", commandString);
@@ -33,12 +45,12 @@ public class Command {
         }
         if (commandString == typeToString(CommandTypes.PATH_WAYPOINT)) {
             try {
-                obj.put("wayPoint", new int[]{h, w});
+                obj.put("data", new JSONArray(new int[]{19 - h, w}));
             } catch (Exception e) {
             }
         } else if (commandString == typeToString(CommandTypes.ROBOT_LOCATION)) {
             try {
-                obj.put("robotPos", new int[]{h, w, direction});
+                obj.put("data", new JSONArray(new int[]{18 - h, w + 1, direction}));
             } catch (Exception e) {
             }
         }
@@ -48,17 +60,17 @@ public class Command {
     private String typeToString(CommandTypes commandType) {
         switch (commandType) {
             case FORWARD:
-                return "f";
+                return "F";
             case REVERSE:
-                return "r";
+                return "B";
             case STRAFE_LEFT:
-                return "sl";
+                return "SL";
             case STRAFE_RIGHT:
-                return "sr";
+                return "SR";
             case ROTATE_LEFT:
-                return "tl";
+                return "L";
             case ROTATE_RIGHT:
-                return "tr";
+                return "R";
             case BEGIN_EXPLORE:
                 return "beginExplore";
             case BEGIN_FASTEST_PATH:
@@ -72,7 +84,7 @@ public class Command {
             case PATH_WAYPOINT:
                 return "wayPoint";
             case ROBOT_LOCATION:
-                return "robotLoc";
+                return "robotPos";
             default:
                 return "";
         }

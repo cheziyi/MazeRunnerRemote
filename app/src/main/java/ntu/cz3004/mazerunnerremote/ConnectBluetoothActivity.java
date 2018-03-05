@@ -136,8 +136,9 @@ public class ConnectBluetoothActivity extends DeviceList implements CompoundButt
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.disconnectButton:
+                BluetoothManager.ManualDc = true;
                 bt.disconnect();
                 updateUI(bt.isBluetoothEnabled());
                 break;

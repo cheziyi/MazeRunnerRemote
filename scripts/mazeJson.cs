@@ -21,7 +21,7 @@ namespace ScriptNs
             string stringToSend = "";
             if (posTgridF)
             {
-                stringToSend = @"{""robotPos"" : [" + robotPosition[0] + ", " + robotPosition[1] + ", " + robotPosition[2] + "]}";
+                stringToSend = @"{""robotPos"" : [" + (18-robotPosition[1]) + ", " + (robotPosition[0]+1) + ", " + robotPosition[2] + "]}";
             }
             else
             {
