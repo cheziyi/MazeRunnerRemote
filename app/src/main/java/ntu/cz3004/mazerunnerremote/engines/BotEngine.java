@@ -212,24 +212,29 @@ public class BotEngine extends SurfaceView implements Runnable, View.OnLongClick
         if (robotPosition != null) {
             botX = robotPosition.getX();
             botY = robotPosition.getY();
-            switch (robotPosition.getDirection()) {
-                case 0:
-                    heading = Heading.UP;
-                    break;
-                case 90:
-                    heading = Heading.RIGHT;
-                    break;
-                case 180:
-                    heading = Heading.DOWN;
-                    break;
-                case 270:
-                    heading = Heading.LEFT;
-                    break;
-            }
+            heading = degreeToDirection(robotPosition.getDirection());
         }
         if (resp.getGrid() != null) {
             grid = resp.getDisplayGrid();
         }
+    }
+
+    public void rotateBot(boolean isClockWise) {
+        int currentBotOrientation = directionToDegree(heading);
+        if(isClockWise) {
+            currentBotOrientation += 90;
+            if(currentBotOrientation > 270) {
+                currentBotOrientation = 0;
+            }
+
+        }
+        else {
+            currentBotOrientation -= 90;
+            if(currentBotOrientation < 0) {
+                currentBotOrientation = 270;
+            }
+        }
+        heading = degreeToDirection(currentBotOrientation);
     }
 
     private int directionToDegree(Heading heading) {
@@ -244,6 +249,21 @@ public class BotEngine extends SurfaceView implements Runnable, View.OnLongClick
                 return 270;
             default:
                 return 0;
+        }
+    }
+
+    private Heading degreeToDirection(int degree) {
+        switch (degree) {
+            case 0:
+                return Heading.UP;
+            case 90:
+                return Heading.RIGHT;
+            case 180:
+                return Heading.DOWN;
+            case 270:
+                return Heading.LEFT;
+            default:
+                return null;
         }
     }
 
@@ -436,9 +456,13 @@ public class BotEngine extends SurfaceView implements Runnable, View.OnLongClick
 
     public void setWaypoint() {
         this.wayPoint = new Point(touchX / blockWidth, touchY / blockHeight);
-        Command waypointCommand = new Command(Command.CommandTypes.PATH_WAYPOINT);
-        waypointCommand.setLocation(wayPoint.x, wayPoint.y);
-        BluetoothManager.SendCommand(waypointCommand);
+//        Command waypointCommand = new Command(Command.CommandTypes.PATH_WAYPOINT);
+//        waypointCommand.setLocation(wayPoint.x, wayPoint.y);
+//        BluetoothManager.SendCommand(waypointCommand);
+    }
+
+    public Point getWayPoint() {
+        return wayPoint;
     }
 
     @Override
