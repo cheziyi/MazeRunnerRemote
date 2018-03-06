@@ -55,7 +55,6 @@ public class CheckC567Fragment extends MainFragment implements View.OnClickListe
         updateModeSwitch = view.findViewById(R.id.updateModeSwitch);
         updateButton = view.findViewById(R.id.updateButton);
         botEngine = view.findViewById(R.id.botEngine);
-
         btnExplore = view.findViewById(R.id.btnExplore);
         btnRace = view.findViewById(R.id.btnRace);
         btnRotateACW = view.findViewById(R.id.btnRotateACW);
