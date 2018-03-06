@@ -89,12 +89,12 @@ public class CheckC8Fragment extends MainFragment implements View.OnClickListene
                     break;
                 case R.id.btnViewPersistent1:
                     String string1=sharedPref.getString("string1","");
-                    bt.send(string1, false);
+                    bt.send(string1, true);
                     break;
 
                 case R.id.btnViewPersistent2:
                     String string2 = sharedPref.getString("string2","");
-                    bt.send(string2, false);
+                    bt.send(string2, true);
                     break;
             }
     }

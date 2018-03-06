@@ -86,7 +86,7 @@ public class CheckC1Fragment extends MainFragment implements View.OnClickListene
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.sendBtn:
-                bt.send(messageEditText.getText().toString(), false);
+                bt.send(messageEditText.getText().toString(), true);
                 messageListAdapter.add("[Android]: " + messageEditText.getText().toString());
                 messageEditText.setText("");
                 break;

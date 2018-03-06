@@ -44,7 +44,7 @@ public class BluetoothManager {
     }
 
     public static void SendCommand(Command command){
-        bt.send(command.getCommandString(), false);
+        bt.send(command.getCommandString(), true);
     }
 
 }
