@@ -17,8 +17,12 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+
+import app.akexorcist.bluetotohspp.library.BluetoothSPP;
 import ntu.cz3004.mazerunnerremote.R;
 import ntu.cz3004.mazerunnerremote.dto.Command;
+import ntu.cz3004.mazerunnerremote.dto.Response;
 import ntu.cz3004.mazerunnerremote.engines.BotEngine;
 import ntu.cz3004.mazerunnerremote.managers.BluetoothManager;
 
@@ -69,6 +73,19 @@ public class CheckC567Fragment extends MainFragment implements View.OnClickListe
         btnRace.setOnClickListener(this);
         btnRotateACW.setOnClickListener(this);
         btnRotateCW.setOnClickListener(this);
+
+        bt.setOnDataReceivedListener(new BluetoothSPP.OnDataReceivedListener() {
+            @Override
+            public void onDataReceived(byte[] data, String message) {
+                Response resp = new Gson().fromJson(message, Response.class);
+                String event = resp.getEvent();
+                if(event != null) {
+                    if(event.equals("endExplore") || event.equals("endFastest")) {
+                        setInteraction(true);
+                    }
+                }
+            }
+        });
     }
 
     @Override
