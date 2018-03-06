@@ -28,6 +28,16 @@ import static ntu.cz3004.mazerunnerremote.managers.BluetoothManager.bt;
 
 public class BotEngine extends SurfaceView implements Runnable, View.OnLongClickListener, View.OnTouchListener {
 
+    public interface OnInteractionChangedListener{
+        void OnInteractionChanged(boolean isEnabled);
+    }
+
+    private OnInteractionChangedListener onInteractionChangedListener;
+
+    public void setOnInteractionChangedListener(OnInteractionChangedListener onInteractionChangedListener) {
+        this.onInteractionChangedListener = onInteractionChangedListener;
+    }
+
     // Our map thread for the main loop
     private Thread thread = null;
 
@@ -222,6 +232,7 @@ public class BotEngine extends SurfaceView implements Runnable, View.OnLongClick
         if(event != null) {
             if(event.equals("endExplore") || event.equals("endFastest")) {
                 allowInteration = true;
+                onInteractionChangedListener.OnInteractionChanged(allowInteration);
             }
         }
     }
