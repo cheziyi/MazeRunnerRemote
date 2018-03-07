@@ -1,25 +1,32 @@
 package ntu.cz3004.mazerunnerremote.engines;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
+import android.os.CountDownTimer;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+import android.view.ViewConfiguration;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 
 import app.akexorcist.bluetotohspp.library.BluetoothSPP;
+import ntu.cz3004.mazerunnerremote.R;
 import ntu.cz3004.mazerunnerremote.dto.Command;
 import ntu.cz3004.mazerunnerremote.dto.Response;
 import ntu.cz3004.mazerunnerremote.fragments.OnBtReceivedListener;
 import ntu.cz3004.mazerunnerremote.managers.BluetoothManager;
+import ntu.cz3004.mazerunnerremote.managers.GuiUtilManager;
 
 import static ntu.cz3004.mazerunnerremote.managers.BluetoothManager.bt;
 
@@ -98,6 +105,28 @@ public class BotEngine extends SurfaceView implements Runnable, View.OnLongClick
 
     // Some paint for our canvas
     private Paint paint;
+
+    private boolean isCounterRunning = false;
+    private int botColor = ContextCompat.getColor(getContext(), R.color.white);
+
+    private CountDownTimer countDownTimer = new CountDownTimer(ViewConfiguration.getLongPressTimeout(), 1) {
+        @Override
+        public void onTick(long millisUntilFinished) {
+            isCounterRunning = true;
+            float percent = 1 - millisUntilFinished/(float)ViewConfiguration.getLongPressTimeout();
+            int[] newColor = GuiUtilManager.colorIdToHexLong(getContext(), R.color.white, R.color.red, percent);
+            botColor = newColor[0];
+
+            Log.d("touchTimer", String.valueOf(percent));
+        }
+
+        @Override
+        public void onFinish() {
+            isCounterRunning = false;
+            Log.d("touchTimer", "onFinished()");
+
+        }
+    };
 
     public BotEngine(Context context) {
         super(context);
@@ -283,6 +312,7 @@ public class BotEngine extends SurfaceView implements Runnable, View.OnLongClick
         }
     }
 
+    @SuppressLint("ResourceAsColor")
     public void draw() {
         // Get a lock on the canvas
         if (surfaceHolder.getSurface().isValid()) {
@@ -330,6 +360,7 @@ public class BotEngine extends SurfaceView implements Runnable, View.OnLongClick
 
 
             //draw bot
+            paint.setColor(botColor);
             canvas.drawRect((botX * blockWidth), (botY * blockHeight), ((botX * blockWidth) + (blockWidth * BOT_SIZE)), ((botY * blockHeight) + (blockHeight * BOT_SIZE)), paint);
             drawArrow();
 
@@ -471,10 +502,10 @@ public class BotEngine extends SurfaceView implements Runnable, View.OnLongClick
     }
 
     public void setWaypoint() {
-        this.wayPoint = new Point(touchX / blockWidth, touchY / blockHeight);
-//        Command waypointCommand = new Command(Command.CommandTypes.PATH_WAYPOINT);
-//        waypointCommand.setLocation(wayPoint.x, wayPoint.y);
-//        BluetoothManager.SendCommand(waypointCommand);
+        int x = touchX / blockWidth;
+        int y = touchY / blockHeight;
+        this.wayPoint = new Point(x, y);
+        Toast.makeText(getContext(), "Set (" + String.valueOf(x) + "," + String.valueOf(y) + ")", Toast.LENGTH_SHORT).show();
     }
 
     public Point getWayPoint() {
@@ -488,7 +519,11 @@ public class BotEngine extends SurfaceView implements Runnable, View.OnLongClick
                 isEditMode = true;
                 return true;
             }
-            setWaypoint();
+            else {
+                setWaypoint();
+                return true;
+            }
+
         }
         return false;
     }
@@ -503,6 +538,9 @@ public class BotEngine extends SurfaceView implements Runnable, View.OnLongClick
         switch (motionEvent.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 setBotCanvas(touchCoor);
+                if(touchBot() && !isCounterRunning){
+                    countDownTimer.start();
+                }
                 return false; //return false so that onLongClick get triggered
             case MotionEvent.ACTION_MOVE:
                 setBotPosition(touchCoor);
@@ -514,6 +552,11 @@ public class BotEngine extends SurfaceView implements Runnable, View.OnLongClick
 //                    botLocCommand.setDirection(directionToDegree(heading));
 //                    BluetoothManager.SendCommand(botLocCommand);
                     isEditMode = false;
+                    botColor = ContextCompat.getColor(getContext(), R.color.white);
+                }
+                if(isCounterRunning){
+                    countDownTimer.cancel();
+                    isCounterRunning = false;
                 }
                 return false;
         }
