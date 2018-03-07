@@ -46,24 +46,13 @@ public class CheckC1Fragment extends MainFragment implements View.OnClickListene
         messageRecyclerView = view.findViewById(R.id.messageRecyclerView);
         messageEditText = view.findViewById(R.id.messageEditText);
         sendBtn = view.findViewById(R.id.sendBtn);
-
-        bt.setOnDataReceivedListener(new BluetoothSPP.OnDataReceivedListener() {
-            public void onDataReceived(byte[] data, String message) {
-                messageListAdapter.add("[PC]: " + message);
-//                Response resp = new Gson().fromJson(message, Response.class);
-//                if (resp.getGrid() != null)
-//                    messageListAdapter.add("[GRID]: " + new Gson().toJson(resp.getGrid()));
-            }
-        });
         return view;
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         sendBtn.setOnClickListener(this);
-
         messageListAdapter = new MessageListAdapter();
         messageRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         messageRecyclerView.setAdapter(messageListAdapter);
@@ -72,6 +61,11 @@ public class CheckC1Fragment extends MainFragment implements View.OnClickListene
     @Override
     int getNavigationMenuItemId() {
         return R.id.nav_check_c1;
+    }
+
+    @Override
+    public void onBtDataReceived(byte[] data, String message) {
+        messageListAdapter.add("[PC]: " + message);
     }
 
     @Override

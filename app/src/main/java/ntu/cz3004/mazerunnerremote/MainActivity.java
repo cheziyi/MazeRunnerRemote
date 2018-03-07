@@ -17,17 +17,23 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.gson.Gson;
 
 import app.akexorcist.bluetotohspp.library.BluetoothSPP;
 import app.akexorcist.bluetotohspp.library.BluetoothState;
+import ntu.cz3004.mazerunnerremote.dto.Response;
 import ntu.cz3004.mazerunnerremote.fragments.CheckC1Fragment;
 import ntu.cz3004.mazerunnerremote.fragments.CheckC3Fragment;
 import ntu.cz3004.mazerunnerremote.fragments.CheckC567Fragment;
 import ntu.cz3004.mazerunnerremote.fragments.CheckC8Fragment;
 import ntu.cz3004.mazerunnerremote.fragments.ManualFragment;
+import ntu.cz3004.mazerunnerremote.fragments.OnBtReceivedListener;
 import ntu.cz3004.mazerunnerremote.fragments.OnFragmentViewCreatedListener;
 import ntu.cz3004.mazerunnerremote.fragments.TraverseFragment;
 import ntu.cz3004.mazerunnerremote.managers.BluetoothManager;
@@ -35,12 +41,14 @@ import ntu.cz3004.mazerunnerremote.managers.BluetoothManager;
 import static ntu.cz3004.mazerunnerremote.managers.BluetoothManager.bt;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, OnFragmentViewCreatedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, OnFragmentViewCreatedListener, OnBtReceivedListener {
 
     private static final int ACCESS_LOCATION_REQUEST_CODE = 1;
 
     private DrawerLayout drawer;
     private NavigationView navigationView;
+
+    private TextView btStatusTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +66,8 @@ public class MainActivity extends AppCompatActivity
 
         navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        btStatusTextView = findViewById(R.id.btStatusTextView);
 
         replaceFragment(new TraverseFragment(), "0");
 
@@ -236,4 +246,20 @@ public class MainActivity extends AppCompatActivity
     public void onViewCreated(int id) {
         navigationView.setCheckedItem(id);
     }
+
+    @Override
+    public void onBtReceived(byte[] data, String message) {
+        try {
+            Response resp = new Gson().fromJson(message, Response.class);
+            if(resp.getStatus() != null) {
+                btStatusTextView.setText("status: " + resp.getStatus());
+            }
+        }
+        catch (Exception e) {
+            //in-case the message is not JSON format
+            Log.v("DEBUG", e.getMessage());
+        }
+
+    }
+
 }

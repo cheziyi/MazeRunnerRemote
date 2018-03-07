@@ -64,9 +64,9 @@ public class Command {
             case REVERSE:
                 return "B";
             case STRAFE_LEFT:
-                return "SL";
+                return "LFR";
             case STRAFE_RIGHT:
-                return "SR";
+                return "RFL";
             case ROTATE_LEFT:
                 return "L";
             case ROTATE_RIGHT:

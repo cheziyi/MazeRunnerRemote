@@ -25,7 +25,17 @@ public class TraverseFragment extends MainFragment {
     }
 
     @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+    }
+
+    @Override
     int getNavigationMenuItemId() {
         return R.id.nav_traverse;
+    }
+
+    @Override
+    public void onBtDataReceived(byte[] data, String message) {
+
     }
 }
