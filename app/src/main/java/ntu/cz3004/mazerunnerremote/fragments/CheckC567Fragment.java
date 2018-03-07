@@ -73,16 +73,10 @@ public class CheckC567Fragment extends MainFragment implements View.OnClickListe
         btnRotateACW.setOnClickListener(this);
         btnRotateCW.setOnClickListener(this);
 
-        bt.setOnDataReceivedListener(new BluetoothSPP.OnDataReceivedListener() {
+        botEngine.setOnInteractionChangedListener(new BotEngine.OnInteractionChangedListener() {
             @Override
-            public void onDataReceived(byte[] data, String message) {
-                Response resp = new Gson().fromJson(message, Response.class);
-                String event = resp.getEvent();
-                if(event != null) {
-                    if(event.equals("endExplore") || event.equals("endFastest")) {
-                        setInteraction(true);
-                    }
-                }
+            public void OnInteractionChanged(boolean isEnabled) {
+                setInteraction(isEnabled);
             }
         });
     }
@@ -90,6 +84,11 @@ public class CheckC567Fragment extends MainFragment implements View.OnClickListe
     @Override
     int getNavigationMenuItemId() {
         return R.id.nav_check_c567;
+    }
+
+    @Override
+    public void onBtDataReceived(byte[] data, String message) {
+        botEngine.update(message);
     }
 
     @Override

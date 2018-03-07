@@ -6,8 +6,6 @@
     android:background="@color/lightGrey"
     tools:context="ntu.cz3004.mazerunnerremote.fragments.TraverseFragment">
 
-    <include layout="@layout/divider" />
-
     <android.support.v7.widget.RecyclerView
         android:id="@+id/messageRecyclerView"
         android:layout_width="match_parent"

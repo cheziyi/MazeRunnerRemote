@@ -79,13 +79,4 @@
 
     </GridLayout>
 
-    <TextView
-        android:id="@+id/deviceStatusTextView"
-        android:layout_width="212dp"
-        android:layout_height="49dp"
-        android:layout_gravity="center"
-        android:layout_marginVertical="20dp"
-        android:text="Device Status: "
-        android:textSize="20dp" />
-
 </LinearLayout>

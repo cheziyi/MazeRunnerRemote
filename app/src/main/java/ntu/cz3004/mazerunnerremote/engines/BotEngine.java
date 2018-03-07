@@ -18,6 +18,7 @@ import com.google.gson.Gson;
 import app.akexorcist.bluetotohspp.library.BluetoothSPP;
 import ntu.cz3004.mazerunnerremote.dto.Command;
 import ntu.cz3004.mazerunnerremote.dto.Response;
+import ntu.cz3004.mazerunnerremote.fragments.OnBtReceivedListener;
 import ntu.cz3004.mazerunnerremote.managers.BluetoothManager;
 
 import static ntu.cz3004.mazerunnerremote.managers.BluetoothManager.bt;
@@ -72,13 +73,14 @@ public class BotEngine extends SurfaceView implements Runnable, View.OnLongClick
     private Point wayPoint;
     private int[][] grid;
 
-    // The size in blocks of the runnable area
-    private final int BOT_START_POSITION_X = 0;
-    private final int BOT_START_POSITION_Y = 0;
-    private final int NUM_BLOCKS_WIDTH = 15;
-    private final int NUM_BLOCKS_HEIGHT = 20;
     private final int BOT_SIZE = 3;
     private final float TILE_BORDER_RATION = 0.1f;
+
+    // The size in blocks of the runnable area
+    private final int NUM_BLOCKS_WIDTH = 15;
+    private final int NUM_BLOCKS_HEIGHT = 20;
+    private final int BOT_START_POSITION_X = 0;
+    private final int BOT_START_POSITION_Y = NUM_BLOCKS_HEIGHT - BOT_SIZE;
 
     // Control pausing between updates
     private long nextFrameTime;
@@ -192,12 +194,6 @@ public class BotEngine extends SurfaceView implements Runnable, View.OnLongClick
 
     @Override
     public void run() {
-        bt.setOnDataReceivedListener(new BluetoothSPP.OnDataReceivedListener() {
-            public void onDataReceived(byte[] data, String message) {
-                printLog(message);
-                update(message);
-            }
-        });
         while (isRunning) {
             if (updateRequired()) {
                 //if(isAutoUpdating) BluetoothManager.SendCommand(new Command(Command.CommandTypes.SEND_MAP));
@@ -217,7 +213,7 @@ public class BotEngine extends SurfaceView implements Runnable, View.OnLongClick
         return false;
     }
 
-    private void update(String messageReceived) {
+    public void update(String messageReceived) {
         Response resp = new Gson().fromJson(messageReceived, Response.class);
         Response.RobotPosition robotPosition = resp.getRobotPosition();
         String event = resp.getEvent();

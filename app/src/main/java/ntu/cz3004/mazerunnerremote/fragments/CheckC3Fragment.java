@@ -30,7 +30,6 @@ import static ntu.cz3004.mazerunnerremote.managers.BluetoothManager.bt;
 
 public class CheckC3Fragment extends MainFragment implements View.OnClickListener {
 
-    private TextView deviceStatusTextView;
     private ImageButton forwardBtn;
     private ImageButton rotateLeftBtn;
     private ImageButton rotateRightBtn;
@@ -42,22 +41,12 @@ public class CheckC3Fragment extends MainFragment implements View.OnClickListene
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_check_c3, container, false);
-        deviceStatusTextView = view.findViewById(R.id.deviceStatusTextView);
         forwardBtn = view.findViewById(R.id.imageButtonForward);
         rotateLeftBtn = view.findViewById(R.id.imageButtonRotateLeft);
         rotateRightBtn = view.findViewById(R.id.imageButtonRotateRight);
         reverseBtn = view.findViewById(R.id.imageButtonReverse);
         strafeRightBtn = view.findViewById(R.id.imageButtonStrafeRight);
         strafeLeftBtn = view.findViewById(R.id.imageButtonStrafeLeft);
-
-        bt.setOnDataReceivedListener(new BluetoothSPP.OnDataReceivedListener() {
-            public void onDataReceived(byte[] data, String message) {
-                Response resp = new Gson().fromJson(message, Response.class);
-                if(resp.getStatus() != null) {
-                    deviceStatusTextView.setText(resp.getStatus());
-                }
-            }
-        });
         return view;
     }
 
@@ -75,6 +64,11 @@ public class CheckC3Fragment extends MainFragment implements View.OnClickListene
     @Override
     int getNavigationMenuItemId() {
         return R.id.nav_check_c3;
+    }
+
+    @Override
+    public void onBtDataReceived(byte[] data, String message) {
+
     }
 
     @Override

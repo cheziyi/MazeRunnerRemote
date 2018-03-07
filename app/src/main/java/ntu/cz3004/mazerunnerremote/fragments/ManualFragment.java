@@ -23,7 +23,17 @@ public class ManualFragment extends MainFragment {
     }
 
     @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+    }
+
+    @Override
     int getNavigationMenuItemId() {
         return R.id.nav_manual;
+    }
+
+    @Override
+    public void onBtDataReceived(byte[] data, String message) {
+
     }
 }

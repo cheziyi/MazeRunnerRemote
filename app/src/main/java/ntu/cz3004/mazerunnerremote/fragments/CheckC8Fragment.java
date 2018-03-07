@@ -66,6 +66,11 @@ public class CheckC8Fragment extends MainFragment implements View.OnClickListene
     }
 
     @Override
+    public void onBtDataReceived(byte[] data, String message) {
+
+    }
+
+    @Override
     public void onPause() {
         super.onPause();
     }
