@@ -1,26 +1,17 @@
 package ntu.cz3004.mazerunnerremote.fragments;
 
-import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.TextView;
+import android.widget.FrameLayout;
 
-import com.google.gson.Gson;
-
-import app.akexorcist.bluetotohspp.library.BluetoothSPP;
 import ntu.cz3004.mazerunnerremote.R;
-import ntu.cz3004.mazerunnerremote.dto.Command;
-import ntu.cz3004.mazerunnerremote.dto.Response;
-import ntu.cz3004.mazerunnerremote.engines.BotEngine;
-
-import static ntu.cz3004.mazerunnerremote.managers.BluetoothManager.SendCommand;
-import static ntu.cz3004.mazerunnerremote.managers.BluetoothManager.bt;
 
 //import static ntu.cz3004.mazerunnerremote.services.BluetoothService.MESSAGE_READ;
 
@@ -30,35 +21,47 @@ import static ntu.cz3004.mazerunnerremote.managers.BluetoothManager.bt;
 
 public class CheckC3Fragment extends MainFragment implements View.OnClickListener {
 
-    private ImageButton forwardBtn;
-    private ImageButton rotateLeftBtn;
-    private ImageButton rotateRightBtn;
-    private ImageButton reverseBtn;
-    private ImageButton strafeRightBtn;
-    private ImageButton strafeLeftBtn;
+    private FrameLayout container;
+    private BottomNavigationView navigation;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_check_c3, container, false);
-        forwardBtn = view.findViewById(R.id.imageButtonForward);
-        rotateLeftBtn = view.findViewById(R.id.imageButtonRotateLeft);
-        rotateRightBtn = view.findViewById(R.id.imageButtonRotateRight);
-        reverseBtn = view.findViewById(R.id.imageButtonReverse);
-        strafeRightBtn = view.findViewById(R.id.imageButtonStrafeRight);
-        strafeLeftBtn = view.findViewById(R.id.imageButtonStrafeLeft);
+        container = view.findViewById(R.id.container);
+        navigation = view.findViewById(R.id.navigation);
         return view;
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        forwardBtn.setOnClickListener(this);
-        strafeLeftBtn.setOnClickListener(this);
-        strafeRightBtn.setOnClickListener(this);
-        reverseBtn.setOnClickListener(this);
-        rotateLeftBtn.setOnClickListener(this);
-        rotateRightBtn.setOnClickListener(this);
+
+        FragmentTransaction ft = getChildFragmentManager().beginTransaction();
+        ft.replace(R.id.container, new ControlButtonFragment());
+        ft.commit();
+
+        navigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                FragmentTransaction ft = getChildFragmentManager().beginTransaction();
+                switch (item.getItemId()) {
+                    case R.id.menu_button:
+                        ft.replace(R.id.container, new ControlButtonFragment());
+                        ft.commit();
+                        return true;
+                    case R.id.menu_joystick:
+                        ft.replace(R.id.container, new ControlJoystickFragment());
+                        ft.commit();
+                        return true;
+                    case R.id.menu_touch:
+                        ft.replace(R.id.container, new ControlTouchFragment());
+                        ft.commit();
+                        return true;
+                }
+                return false;
+            }
+        });
     }
 
     @Override
@@ -83,26 +86,5 @@ public class CheckC3Fragment extends MainFragment implements View.OnClickListene
 
     @Override
     public void onClick(View view) {
-        String message = null;
-        switch (view.getId()) {
-            case R.id.imageButtonForward:
-                SendCommand(new Command(Command.CommandTypes.FORWARD));
-                break;
-            case R.id.imageButtonRotateLeft:
-                SendCommand(new Command(Command.CommandTypes.ROTATE_LEFT));
-                break;
-            case R.id.imageButtonRotateRight:
-                SendCommand(new Command(Command.CommandTypes.ROTATE_RIGHT));
-                break;
-            case R.id.imageButtonReverse:
-                SendCommand(new Command(Command.CommandTypes.REVERSE));
-                break;
-            case R.id.imageButtonStrafeLeft:
-                SendCommand(new Command(Command.CommandTypes.STRAFE_LEFT));
-                break;
-            case R.id.imageButtonStrafeRight:
-                SendCommand(new Command(Command.CommandTypes.STRAFE_RIGHT));
-                break;
-        }
     }
 }

@@ -30,4 +30,5 @@ dependencies {
     compile 'com.akexorcist:bluetoothspp:1.0.0'
     compile 'com.google.code.gson:gson:2.8.2'
     compile 'org.apache.commons:commons-lang3:3.7'
+    compile 'io.github.controlwear:virtualjoystick:1.8.0'
 }
