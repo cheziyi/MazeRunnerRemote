@@ -8,9 +8,17 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+
+import com.google.gson.Gson;
 
 import io.github.controlwear.virtual.joystick.android.JoystickView;
 import ntu.cz3004.mazerunnerremote.R;
+import ntu.cz3004.mazerunnerremote.dto.Command;
+import ntu.cz3004.mazerunnerremote.dto.Response;
+
+import static ntu.cz3004.mazerunnerremote.managers.BluetoothManager.SendCommand;
+import static ntu.cz3004.mazerunnerremote.managers.BluetoothManager.bt;
 
 //import static ntu.cz3004.mazerunnerremote.services.BluetoothService.MESSAGE_READ;
 
@@ -18,12 +26,14 @@ import ntu.cz3004.mazerunnerremote.R;
  * Created by Aung on 1/28/2018.
  */
 
-public class ControlJoystickFragment extends Fragment implements View.OnClickListener {
+public class ControlJoystickFragment extends MainFragment implements View.OnClickListener {
 
     private JoystickView joystickView;
 
     private boolean shouldMove = false;
     private boolean isMoving = false;
+
+    private int botDirection = 0;
 
 
     @Nullable
@@ -40,45 +50,48 @@ public class ControlJoystickFragment extends Fragment implements View.OnClickLis
         joystickView.setOnMoveListener(new JoystickView.OnMoveListener() {
             @Override
             public void onMove(int angle, int strength) {
-                shouldMove = strength > 0;
+                shouldMove = strength > 30;
                 if(shouldMove) {
-                    Log.d("joystick", "move");
                     if(angle >= 45 && angle < 135) {
-                        Log.d("joystick", "up");
+                        sendCommand(0);
                     }
                     else if(angle >= 135 && angle < 225) {
-                        Log.d("joystick", "left");
+                        sendCommand(270);
                     }
                     else if(angle >= 225 && angle < 315) {
-                        Log.d("joystick", "down");
+                        sendCommand(180);
                     }
                     else {
-                        Log.d("joystick", "right");
+                        sendCommand(90);
                     }
-                    sendCommand();
                 }
                 else {
-                    Log.d("joystick", "stop");
                 }
-
-
-
             }
         });
     }
 
-    private void sendCommand(){
+    private void sendCommand(final int direction){
         if(shouldMove && !isMoving) {
             isMoving = true;
             final Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    // Do something after 5s = 5000ms
-                    Log.d("joystick1", "sendcommand");
+                    if(botDirection == direction) {
+                        SendCommand(new Command(Command.CommandTypes.FORWARD));
+                    }
+                    else {
+                        if((botDirection - direction > 0 && botDirection - direction != 270) || botDirection - direction == -270) {
+                            SendCommand(new Command(Command.CommandTypes.ROTATE_LEFT));
+                        }
+                        else{
+                            SendCommand(new Command(Command.CommandTypes.ROTATE_RIGHT));
+                        }
+                    }
                     isMoving = false;
                 }
-            }, 1000);
+            }, 300);
         }
 
     }
@@ -91,6 +104,20 @@ public class ControlJoystickFragment extends Fragment implements View.OnClickLis
     @Override
     public void onResume() {
         super.onResume();
+    }
+
+    @Override
+    int getNavigationMenuItemId() {
+        return R.id.nav_check_c8;
+    }
+
+    @Override
+    public void onBtDataReceived(byte[] data, String message) {
+        Response resp = new Gson().fromJson(message, Response.class);
+        Response.RobotPosition robotPosition = resp.getRobotPosition();
+        if (robotPosition != null) {
+            botDirection = robotPosition.getDirection();
+        }
     }
 
     @Override
