@@ -50,7 +50,7 @@ public class ControlJoystickFragment extends MainFragment implements View.OnClic
         joystickView.setOnMoveListener(new JoystickView.OnMoveListener() {
             @Override
             public void onMove(int angle, int strength) {
-                shouldMove = strength > 30;
+                shouldMove = strength > 40;
                 if(shouldMove) {
                     if(angle >= 45 && angle < 135) {
                         sendCommand(0);
