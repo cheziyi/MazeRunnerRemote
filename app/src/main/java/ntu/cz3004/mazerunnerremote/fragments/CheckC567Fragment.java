@@ -83,6 +83,9 @@ public class CheckC567Fragment extends MainFragment implements View.OnClickListe
                         });
                 alertDialog.show();
                 return true;
+            case R.id.action_reset:
+                setInteraction(true);
+                return true;
             default:
                 return false;
         }
