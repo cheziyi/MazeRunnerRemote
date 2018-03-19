@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <io.github.controlwear.virtual.joystick.android.JoystickView xmlns:custom="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/joystickView"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        custom:JV_backgroundColor="@color/colorPrimary"
+        custom:JV_borderColor="@color/colorPrimaryDark"
+        custom:JV_borderWidth="5dp"
+        custom:JV_buttonColor="@color/colorAccent"
+        custom:JV_buttonSizeRatio="20%"
+        custom:JV_fixedCenter="false" />
+
+</LinearLayout>

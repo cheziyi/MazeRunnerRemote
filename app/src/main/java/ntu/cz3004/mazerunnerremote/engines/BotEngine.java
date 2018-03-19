@@ -262,6 +262,8 @@ public class BotEngine extends SurfaceView implements Runnable, View.OnLongClick
         }
     }
 
+
+
     public void rotateBot(boolean isClockWise) {
         if(allowInteration) {
             int currentBotOrientation = directionToDegree(heading);
