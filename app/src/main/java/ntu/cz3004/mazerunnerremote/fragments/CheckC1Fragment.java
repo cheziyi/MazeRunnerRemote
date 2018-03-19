@@ -72,7 +72,7 @@ public class CheckC1Fragment extends MainFragment implements View.OnClickListene
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         menu.clear();
-        inflater.inflate(R.menu.menu_c8, menu);
+        inflater.inflate(R.menu.menu_c1, menu);
     }
 
 

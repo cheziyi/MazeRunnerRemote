@@ -1,12 +1,17 @@
 package ntu.cz3004.mazerunnerremote.fragments;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,6 +51,42 @@ public class CheckC567Fragment extends MainFragment implements View.OnClickListe
 
     //Canvas view
     private BotEngine botEngine;
+
+    private String gridP1 = "";
+    private String gridP2 = "";
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        menu.clear();
+        inflater.inflate(R.menu.menu_c567, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_show_grid_string:
+                AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).create();
+                alertDialog.setTitle("Grid String");
+                alertDialog.setMessage("MDP Part 1: " + gridP1 + "\n\n" + "MDP Part 2: " + gridP2);
+                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "dismiss",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                alertDialog.show();
+                return true;
+            default:
+                return false;
+        }
+    }
 
     @Nullable
     @Override
@@ -89,6 +130,13 @@ public class CheckC567Fragment extends MainFragment implements View.OnClickListe
     @Override
     public void onBtDataReceived(byte[] data, String message) {
         botEngine.update(message);
+        Response resp = new Gson().fromJson(message, Response.class);
+        if (resp.getGridP1() != null) {
+            gridP1 = resp.getGridP1();
+        }
+        if (resp.getGridP2() != null) {
+            gridP2 = resp.getGridP2();
+        }
     }
 
     @Override
