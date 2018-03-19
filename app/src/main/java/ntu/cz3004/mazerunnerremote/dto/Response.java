@@ -89,7 +89,6 @@ public class Response {
         return gridLayout;
     }
 
-
     public int[][] getDisplayGrid() {
         if (getGrid() == null)
             return null;
@@ -105,12 +104,18 @@ public class Response {
         return dGrid;
     }
 
+    public String getGridP1() {
+        return gridP1;
+    }
+
+    public String getGridP2() {
+        return gridP2;
+    }
 
     public void setGrid(String gridP1, String gridP2) {
         this.gridP1 = gridP1;
         this.gridP2 = gridP2;
     }
-
 
     public String getStatus() {
         return status;
