@@ -84,14 +84,22 @@ public class ControlJoystickFragment extends MainFragment implements View.OnClic
                     else {
                         if((botDirection - direction > 0 && botDirection - direction != 270) || botDirection - direction == -270) {
                             SendCommand(new Command(Command.CommandTypes.ROTATE_LEFT));
+                            botDirection -= 90;
+                            if(botDirection < 0){
+                                botDirection = 270;
+                            }
                         }
                         else{
                             SendCommand(new Command(Command.CommandTypes.ROTATE_RIGHT));
+                            botDirection += 90;
+                            if(botDirection > 270){
+                                botDirection = 0;
+                            }
                         }
                     }
                     isMoving = false;
                 }
-            }, 300);
+            }, 800);
         }
 
     }
@@ -113,11 +121,11 @@ public class ControlJoystickFragment extends MainFragment implements View.OnClic
 
     @Override
     public void onBtDataReceived(byte[] data, String message) {
-        Response resp = new Gson().fromJson(message, Response.class);
-        Response.RobotPosition robotPosition = resp.getRobotPosition();
-        if (robotPosition != null) {
-            botDirection = robotPosition.getDirection();
-        }
+//        Response resp = new Gson().fromJson(message, Response.class);
+//        Response.RobotPosition robotPosition = resp.getRobotPosition();
+//        if (robotPosition != null) {
+//            botDirection = robotPosition.getDirection();
+//        }
     }
 
     @Override

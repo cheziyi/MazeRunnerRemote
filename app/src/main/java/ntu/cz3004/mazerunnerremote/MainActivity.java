@@ -32,10 +32,8 @@ import ntu.cz3004.mazerunnerremote.fragments.CheckC1Fragment;
 import ntu.cz3004.mazerunnerremote.fragments.CheckC3Fragment;
 import ntu.cz3004.mazerunnerremote.fragments.CheckC567Fragment;
 import ntu.cz3004.mazerunnerremote.fragments.CheckC8Fragment;
-import ntu.cz3004.mazerunnerremote.fragments.ManualFragment;
 import ntu.cz3004.mazerunnerremote.fragments.OnBtReceivedListener;
 import ntu.cz3004.mazerunnerremote.fragments.OnFragmentViewCreatedListener;
-import ntu.cz3004.mazerunnerremote.fragments.TraverseFragment;
 import ntu.cz3004.mazerunnerremote.managers.BluetoothManager;
 
 import static ntu.cz3004.mazerunnerremote.managers.BluetoothManager.bt;
@@ -69,7 +67,7 @@ public class MainActivity extends AppCompatActivity
 
         btStatusTextView = findViewById(R.id.btStatusTextView);
 
-        replaceFragment(new TraverseFragment(), "0");
+        replaceFragment(new CheckC1Fragment(), "c1");
 
         bt = new BluetoothSPP(getApplicationContext());
 
@@ -159,12 +157,6 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         switch (item.getItemId()) {
-            case R.id.nav_traverse:
-                replaceFragment(new TraverseFragment(), "0");
-                break;
-            case R.id.nav_manual:
-                replaceFragment(new ManualFragment(), "1");
-                break;
             case R.id.nav_check_c1:
                 replaceFragment(new CheckC1Fragment(), "c1");
                 break;
