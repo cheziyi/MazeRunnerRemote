@@ -4,38 +4,30 @@
     tools:showIn="navigation_view">
 
     <group android:checkableBehavior="single">
-        <item
-            android:id="@+id/nav_traverse"
-            android:icon="@drawable/ic_menu_main"
-            android:title="Traverse mode" />
-        <item
-            android:id="@+id/nav_manual"
-            android:icon="@drawable/ic_menu_manual"
-            android:title="Manual mode" />
 
-        <item android:title="Shortlist">
+        <item android:title="Main Programme">
             <menu>
                 <group android:checkableBehavior="single">
                     <item
                         android:id="@+id/nav_check_c1"
                         android:icon="@drawable/ic_menu_c1"
-                        android:title="C1" />
+                        android:title="Send/Receive String" />
                     <item
                         android:id="@+id/nav_check_c2"
                         android:icon="@drawable/ic_menu_c2"
-                        android:title="C2" />
+                        android:title="Bluetooth" />
                     <item
                         android:id="@+id/nav_check_c3"
                         android:icon="@drawable/ic_menu_manual"
-                        android:title="C3, C4" />
+                        android:title="Controller" />
                     <item
                         android:id="@+id/nav_check_c567"
                         android:icon="@drawable/ic_menu_c567"
-                        android:title="C5, C6, C7" />
+                        android:title="Grid Map" />
                     <item
                         android:id="@+id/nav_check_c8"
                         android:icon="@drawable/ic_menu_c8"
-                        android:title="C8" />
+                        android:title="Custom String" />
                 </group>
             </menu>
         </item>
