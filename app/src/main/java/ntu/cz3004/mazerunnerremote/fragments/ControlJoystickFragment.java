@@ -99,7 +99,7 @@ public class ControlJoystickFragment extends MainFragment implements View.OnClic
                     }
                     isMoving = false;
                 }
-            }, 300);
+            }, 800);
         }
 
     }
