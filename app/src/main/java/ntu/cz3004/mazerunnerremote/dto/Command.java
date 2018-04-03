@@ -60,17 +60,17 @@ public class Command {
     private String typeToString(CommandTypes commandType) {
         switch (commandType) {
             case FORWARD:
-                return "F";
+                return "F 1";
             case REVERSE:
-                return "B";
+                return "B 1";
             case STRAFE_LEFT:
-                return "LFR";
+                return "L 1,F 1,R 1";
             case STRAFE_RIGHT:
-                return "RFL";
+                return "R 1,F 1,L 1";
             case ROTATE_LEFT:
-                return "L";
+                return "L 1";
             case ROTATE_RIGHT:
-                return "R";
+                return "R 1";
             case BEGIN_EXPLORE:
                 return "beginExplore";
             case BEGIN_FASTEST_PATH:
